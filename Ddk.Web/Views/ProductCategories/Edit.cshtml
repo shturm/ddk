@@ -1,0 +1,123 @@
+﻿@model Ddk.Web.Models.ProductCategoryEditVM
+
+@{
+    ViewData["Title"] = Model.Name;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2><a asp-action="Edit" asp-route-id="@Model.ParentId">@Model.ParentName</a>  / @Model.Name</h2>
+
+<form asp-action="Edit">
+    <div class="form-horizontal">
+        <h4>Категория</h4>
+        <hr />
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <input type="hidden" asp-for="Id" />
+        <div class="form-group">
+            <label class="control-label col-md-2">Id</label>
+            <div class="col-md-10">@Model.Id</div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Name" class="col-md-2 control-label">Име на категория</label>
+            <div class="col-md-10">
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </div>
+        @if(Model.ParentId != null)
+        {
+            <div class="form-group">
+                <label class="control-label col-md-2">Родител</label>
+                <div class="col-md-10">
+                    <select asp-for="ParentId" class="form-control" asp-items="ViewBag.RootCategoriesForCurrentCategory"></select>
+                    <span asp-validation-for="ParentId" class="text-danger"></span>
+                </div>
+            </div>
+        }
+        
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Запази" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+</form>
+
+@if (Model.ProductsCount > 0)
+{
+<h4>Продукти (@Model.ProductsCount)</h4>
+<table class="table table-striped">
+    <tr>
+        <th>SKU</th>
+        <th>Име</th>
+        <th>Цена</th>
+        <th></th>
+    </tr>
+    @foreach (var product in Model.Products)
+    {
+        <tr>
+            <td>@product.SKU</td>
+            <td>@product.Name</td>
+            <td>@product.Price</td>
+            <td>
+                <form asp-controller="Products" 
+                      asp-action="ChangeCategory" 
+                      method="POST"
+                      class="form-inline" style="margin-bottom: auto;">
+                    <div class="form-group">
+                        <input name="productId" value="@product.Id" type="hidden" />
+                        <input name="oldCategoryId" value="@Model.Id" type="hidden"/>
+                        <select class="form-control" name="categoryId" asp-items="ViewBag.ProductCategories"></select>
+                        <button class="btn btn-default">Премести в категория</button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+}
+
+<form asp-action="Create" method="POST" class="form-inline">
+    <input type="hidden" asp-for="ParentId" value="@Model.Id" />
+    <input name="Name" placeholder="Нова под-категория"/>
+    <input type="submit" class="btn btn-success" value="Създай" />
+</form>
+@if (Model.ChildrenCount > 0)
+{
+<h4>Под-категории (@Model.ChildrenCount)</h4>
+<table class="table table-striped">
+    <tr>
+        <th>Id</th>
+        <th>Име</th>
+        <th>Продукти</th>
+        <th></th>
+    </tr>
+    @foreach (var c in Model.Children)
+    {
+        <tr>
+            <td>@c.Id</td>
+            <td><a asp-action="Edit" asp-route-id="@c.Id">@c.Name</a></td>
+            <td>@c.ProductsCount</td>
+            <td>
+                <form asp-action="ChangeParentCategory"
+                        method="POST"
+                        class="form-inline" style="margin-bottom: auto;">
+                    <div class="form-group">
+                        <input name="childId" value="@c.Id" type="hidden" />
+                        <input name="oldParentId" value="@Model.Id" type="hidden" />
+                        <select class="form-control" name="parentId" asp-items="ViewBag.RootCategoriesForChildrenOfRootCateogory"></select>
+                        <button class="btn btn-default">Премести в категория</button>
+                    </div>
+                </form>
+            </td>
+        </tr>
+    }
+</table>
+}
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<a class="btn btn-danger" asp-action="Delete" asp-route-id="@Model.Id">Изтрий категорията</a>

@@ -80,15 +80,16 @@
         @foreach (var rootCat in Model.Categories)
         {
             <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
-                <h2>@rootCat.Name</h2>
+                <h2><a asp-action="Edit" asp-controller="ProductCategories" asp-route-id="@rootCat.Id">@rootCat.Name</a></h2>
                 <ol>
                 @foreach (var subCat in rootCat.Children.OrderByDescending(sc=>sc.Products.Count))
                 {
-                    <li><a href="#">@subCat.Name (@subCat.Products?.Count)</a></li>
+                    <li><a asp-controller="ProductCategories" asp-action="Edit" asp-route-id="@subCat.Id">@subCat.Name (@subCat.Products?.Count)</a></li>
                 }
                 </ol>
             </div>
         }
     </div>
+    <a asp-action="CreateRoot" asp-controller="ProductCategories" class="btn btn-success">Нова категория</a>
     
 </div>

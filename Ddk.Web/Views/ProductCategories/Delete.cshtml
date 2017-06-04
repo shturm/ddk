@@ -1,0 +1,28 @@
+﻿@model Ddk.Data.Entities.ProductCategory
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Изтриване на "@Model.Name"</h2>
+
+<h3>Наистина ли искате да изтриете тази категория ?</h3>
+<div>
+    <hr />
+    <dl class="dl-horizontal">
+        <input type="hidden" asp-for="Id" />
+        <dt>
+            Име
+        </dt>
+        <dd>
+            @Model.Id  @Model.Name
+        </dd>
+    </dl>
+    
+    <form asp-action="Delete">
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-danger" />
+        </div>
+    </form>
+</div>

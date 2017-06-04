@@ -13,6 +13,8 @@ using Ddk.Data;
 using Ddk.Models;
 using Ddk.Services;
 using Ddk.Data.Entities;
+using Microsoft.AspNetCore.Identity;
+using Ddk.Web.Data;
 
 namespace Ddk
 {
@@ -23,6 +25,7 @@ namespace Ddk
             var builder = new ConfigurationBuilder()
                 .SetBasePath(env.ContentRootPath)
                 .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile("hosting.json", optional: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true);
 
             if (env.IsDevelopment())
@@ -46,6 +49,7 @@ namespace Ddk
 
             services.AddIdentity<ApplicationUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
+                .AddRoleManager<ApplicationRoleManager>()
                 .AddDefaultTokenProviders();
 
             services.AddMvc();
