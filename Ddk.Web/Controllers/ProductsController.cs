@@ -32,6 +32,56 @@ namespace Ddk.Web.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        // GET /products/{categoryId}/
+        // GET /products/{categoryId}?make=BMW
+        // GET /products/{categoryId}?make=BMW&Model=3 Series
+        // GET /products/{categoryId}?make=BMW&Model=3 Series&Variant=E46
+        //...
+        // GET /products/{categoryId}?make=BMW&Model=3 Series&Variant=E46....
+        // no year-from/to because will add as a filter feature later on
+        public IActionResult PickedProductCategoryChooseCar(int categoryId,
+                                                            string make = null, 
+                                                            string model = null, string variant = null, string body = null, 
+                                                            string type = null, int engineCcm = 0, int engineHp = 0, int engineKw = 0, string engineFuel = null)
+        {
+            
+            if (make == null)
+            {
+                return View(); // view with all makes - https://www.autopower.bg/avtochasti-audi.html
+            }
+
+            if (model == null)
+            {
+                return View(); // show all disctinct combinations of model/variant/body for current make
+            }
+
+            if (type == null)
+            {
+                return View(); // show all distinct combinations of type/engineCcm/engineHp/engineKw/engineFuel with current make, model, variant and body
+            }
+
+            int carId = 0; // get this when you have all parameters above. Should be only one car
+            return RedirectToAction("CompatibleProducts", new { categoryId, carId }); // show specific products (of chosen category) compatible with specific car
+        }
+
+        // GET /car/{carId}/
+        // GET /car/{carId}/category/{categoryId}
+        public IActionResult PickedCarChooseProductCategory(int carId, int categoryId = 0)
+        {
+            if (categoryId == 0)
+            {
+                return View(); // show all categories to choose from
+            }
+
+            return RedirectToAction("CompatibleProducts", new { categoryId, carId}); // show specific products (of chosen category) compatible with specific car
+        }
+
+        public IActionResult CompatibleProducts(int categoryId, int carId)
+        {
+            return View(); // select products of {categoryId} which have CompatibilitySetting rows matching car with car ID = {carId}
+        }
+
+
         // GET: Products/Details/5
         public async Task<IActionResult> Details(int? id)
         {
