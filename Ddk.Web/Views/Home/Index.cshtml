@@ -1,4 +1,4 @@
-﻿@model Ddk.Web.Models.HomeVM
+﻿@model HomeVM
 @{
     ViewData["Title"] = "Home Page";
 }
@@ -72,7 +72,7 @@
         <ol>
             @foreach(var car in Model.Cars)
             {
-                <li><a href="#">@car.Make</a></li>
+                <li><a href="/Products/ChooseCar/?make=@car.Make">@car.Make</a></li>
             }
         </ol>
     </div>
@@ -84,7 +84,7 @@
                 <ol>
                 @foreach (var subCat in rootCat.Children.OrderByDescending(sc=>sc.Products.Count))
                 {
-                    <li><a href="/products/PickedCategoryChooseMake/?categoryId=@subCat.Id">@subCat.Name (@subCat.Products?.Count)</a></li>
+                    <li><a href="/Products/PickedProductCategoryChooseCar/?categoryId=@subCat.Id">@subCat.Name (@subCat.Products?.Count)</a></li>
                 }
                 </ol>
             </div>

@@ -1,0 +1,26 @@
+@model IEnumerable<ChooseModelVariantBodyVM>
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>
+    @Model.Count()
+</h2>
+
+<ul>
+    @foreach (var mvb in Model)
+    {
+        var url = "/Products/ChooseCar/";
+        url += "?make=" + ViewData["make"];
+        url += "&model=" + mvb.Model;
+        url += "&variant=" + mvb.Variant;
+        url += "&body=" + mvb.Body;
+        <li>
+            <a href="@url">
+                @mvb.ToString()
+            </a>
+        </li>
+    }
+</ul>

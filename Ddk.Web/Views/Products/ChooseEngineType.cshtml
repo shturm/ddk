@@ -1,0 +1,30 @@
+@model IEnumerable<ChooseEngineVM>
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>
+    @Model.Count()
+</h2>
+
+<ul>
+    @foreach (var engine in Model)
+    {
+        var url = "/Products/ChooseCar/";
+        url += "?make=" + ViewData["make"];
+        url += "&model=" + ViewData["model"];
+        url += "&variant=" + ViewData["variant"];
+        url += "&body=" + ViewData["body"];
+        url += "&engineFuel=" + engine.Fuel;
+        url += "&engineCcm=" + engine.Ccm;
+        url += "&engineHp=" + engine.Hp;
+        url += "&engineKw=" + engine.Kw;
+        url += "&type=" + engine.Type;
+        <li>
+            <a href="@url">
+                @engine.ToString()
+            </a>
+        </li>
+    }
+</ul>

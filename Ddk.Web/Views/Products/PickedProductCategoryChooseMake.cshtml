@@ -1,0 +1,24 @@
+@model IEnumerable<string>
+
+
+@{   
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>
+    @Model.Count()
+</h2>
+
+<ul>
+    @foreach (var make in Model)
+    {
+        var url = "/Products/PickedProductCategoryChooseCar/";
+        url += "?categoryId=" + ViewData["categoryId"];
+        url += "&make=" + make;
+        <li>
+            <a href="@url">
+                @make
+            </a>
+        </li>
+    }
+</ul>

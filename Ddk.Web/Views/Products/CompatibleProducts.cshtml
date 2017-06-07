@@ -1,0 +1,22 @@
+@model CompatibleProductsVM
+
+@{
+    ViewData["Title"] = "CompatibleProducts";
+}
+
+<h2>@Model.Category.Name</h2>
+
+<h4>@Model.Car.ToString()</h4>
+
+<h2>Category Id: @Model.Category.Id</h2>
+
+<h4>Products count: @Model.Products.Count</h4>
+
+<ul>
+    @foreach (var product in Model.Products)
+    {
+        <li>
+            @product.ToString()
+        </li>
+    }
+</ul>

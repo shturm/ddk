@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Ddk.Data;
+using Ddk.Data.Entities;
+using Ddk.Web.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Ddk.Data;
-using Ddk.Data.Entities;
-using Microsoft.AspNetCore.Authorization;
-using Ddk.Web.Models;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Ddk.Web.Controllers
 {
@@ -19,7 +18,7 @@ namespace Ddk.Web.Controllers
 
         public ProductsController(ApplicationDbContext context)
         {
-            _context = context;    
+            _context = context;
         }
 
         // GET: Products
@@ -27,7 +26,7 @@ namespace Ddk.Web.Controllers
         {
             int pageSize = 100;
             var applicationDbContext = _context.Product.Include(p => p.ProductCategory)
-                .Skip(pageSize * (page-1))
+                .Skip(pageSize * (page - 1))
                 .Take(pageSize);
             ViewData["CurrentPage"] = page;
             return View(await applicationDbContext.ToListAsync());
@@ -42,49 +41,271 @@ namespace Ddk.Web.Controllers
         // no year-from/to because will add as a filter feature later on
         [AllowAnonymous]
         public IActionResult PickedProductCategoryChooseCar(int categoryId,
-                                                            string make = null, 
-                                                            string model = null, string variant = null, string body = null, 
-                                                            string type = null, int engineCcm = 0, int engineHp = 0, int engineKw = 0, string engineFuel = null)
+                                                            string make = null,
+                                                            string model = null, string variant = null, string body = null,
+                                                            string engineFuel = null, string type = null, int engineCcm = 0, int engineHp = 0, int engineKw = 0)
         {
-            ChooseCarVm chooseCarVm = new ChooseCarVm();
-
             if (make == null)
             {
                 List<string> makes = _context.Car.Select(x => x.Make).Distinct().ToList();
                 ViewData["categoryId"] = categoryId;
 
-                return View("PickedCategoryChooseMake", makes); // view with all makes - https://www.autopower.bg/avtochasti-audi.html
+                return View("PickedProductCategoryChooseMake", makes); // view with all makes - https://www.autopower.bg/avtochasti-audi.html
             }
 
             if (model == null)
             {
-                return View("PickedCategoryChooseModelVariantBody", chooseCarVm); // show all disctinct combinations of model/variant/body for current make
+                ViewData["categoryId"] = categoryId;
+                ViewData["make"] = make;
+                var modelVariantBodyCombinations = _context.Car
+                    .OrderBy(x => x.Model)
+                    .ThenBy(x => x.Variant)
+                    .ThenBy(x => x.Body)
+                    .Where(x => x.Make == make)
+                    .GroupBy(x => new
+                    {
+                        x.Model,
+                        x.Variant,
+                        x.Body
+                    })
+                    .Distinct()
+                    .Select(x => x.First())
+                    .Select(x => new ChooseModelVariantBodyVM()
+                    {
+                        Model = x.Model,
+                        Variant = x.Variant,
+                        Body = x.Body
+                    })
+                    .AsEnumerable();
+
+                return View("PickedProductCategoryChooseModelVariantBody", modelVariantBodyCombinations); // show all disctinct combinations of model/variant/body for current make
             }
 
-            if (type == null)
+            if (engineFuel == null)
             {
-                return View("PickedCategoryChooseTypeEngine", chooseCarVm); // show all distinct combinations of type/engineCcm/engineHp/engineKw/engineFuel with current make, model, variant and body
+                ViewData["categoryId"] = categoryId;
+                ViewData["make"] = make;
+                ViewData["model"] = model;
+                ViewData["variant"] = variant;
+                ViewData["body"] = body;
+                var typeOptions = _context.Car
+                    .OrderBy(c => c.Type)
+                    .ThenBy(c => c.EngineFuel)
+                    .Where(c =>
+                        c.Make == make &&
+                        c.Model == model &&
+                        c.Variant == variant &&
+                        c.Body == body)
+                    .GroupBy(c => new ChooseEngineVM()
+                    {
+                        Ccm = c.EngineCcm,
+                        Kw = c.EngineKw,
+                        Hp = c.EngineHp,
+                        Fuel = c.EngineFuel,
+                        Type = c.Type
+                    })
+                    .Select(x => x.Key)
+                    .AsEnumerable();
+
+                // show all distinct combinations of type/engineCcm/engineHp/engineKw/engineFuel with current make, model, variant and body
+                return View("PickedProductCategoryChooseEngineType", typeOptions);
             }
 
-            int carId = 0; // get this when you have all parameters above. Should be only one car
-            return RedirectToAction("CompatibleProducts", new { categoryId, carId }); // show specific products (of chosen category) compatible with specific car
+            ViewData["engineFuel"] = engineFuel;
+            ViewData["type"] = type;
+            ViewData["engineCcm"] = engineCcm;
+            ViewData["engineHp"] = engineHp;
+            ViewData["engineKw"] = engineKw;
+
+            // get this when you have all parameters above. Should be only one car
+            int carId = _context.Car
+                .SingleOrDefault(c =>
+                    c.Make == make &&
+                    c.Model == model &&
+                    c.Variant == variant &&
+                    c.Body == body &&
+                    c.EngineCcm == engineCcm &&
+                    c.EngineFuel == engineFuel &&
+                    c.EngineHp == engineHp &&
+                    c.EngineKw == engineKw &&
+                    c.Type == type)
+                .Id;
+
+            // show specific products (of chosen category) compatible with specific car
+            return RedirectToAction("CompatibleProducts", new { categoryId, carId });
         }
 
         // GET /car/{carId}/
         // GET /car/{carId}/category/{categoryId}
-        public IActionResult PickedCarChooseProductCategory(int carId, int categoryId = 0)
+        [AllowAnonymous]
+        public IActionResult ChooseCar(string make = null,
+                                       string model = null, string variant = null, string body = null,
+                                       string engineFuel = null, string type = null, int engineCcm = 0, int engineHp = 0, int engineKw = 0)
         {
-            if (categoryId == 0)
+            if (make == null)
             {
-                return View(); // show all categories to choose from
+                return RedirectToAction("Index");
             }
 
-            return RedirectToAction("CompatibleProducts", new { categoryId, carId}); // show specific products (of chosen category) compatible with specific car
+            if (model == null)
+            {
+                ViewData["make"] = make;
+                var modelVariantBodyCombinations = _context.Car
+                    .OrderBy(x => x.Model)
+                    .ThenBy(x => x.Variant)
+                    .ThenBy(x => x.Body)
+                    .Where(x => x.Make == make)
+                    .GroupBy(x => new
+                    {
+                        x.Model,
+                        x.Variant,
+                        x.Body
+                    })
+                    .Distinct()
+                    .Select(x => x.First())
+                    .Select(x => new ChooseModelVariantBodyVM()
+                    {
+                        Model = x.Model,
+                        Variant = x.Variant,
+                        Body = x.Body
+                    })
+                    .AsEnumerable();
+
+                // show all disctinct combinations of model/variant/body for current make
+                return View("ChooseModelVariantBody", modelVariantBodyCombinations);
+            }
+
+            if (engineFuel == null)
+            {
+                ViewData["make"] = make;
+                ViewData["model"] = model;
+                ViewData["variant"] = variant;
+                ViewData["body"] = body;
+                var typeOptions = _context.Car
+                    .OrderBy(c => c.Type)
+                    .ThenBy(c => c.EngineFuel)
+                    .Where(c =>
+                        c.Make == make &&
+                        c.Model == model &&
+                        c.Variant == variant &&
+                        c.Body == body)
+                    .GroupBy(c => new ChooseEngineVM()
+                    {
+                        Ccm = c.EngineCcm,
+                        Kw = c.EngineKw,
+                        Hp = c.EngineHp,
+                        Fuel = c.EngineFuel,
+                        Type = c.Type
+                    })
+                    .Select(x => x.Key)
+                    .AsEnumerable();
+
+                // show all distinct combinations of type/engineCcm/engineHp/engineKw/engineFuel with current make, model, variant and body
+                return View("ChooseEngineType", typeOptions);
+            }
+
+            ViewData["engineFuel"] = engineFuel;
+            ViewData["type"] = type;
+            ViewData["engineCcm"] = engineCcm;
+            ViewData["engineHp"] = engineHp;
+            ViewData["engineKw"] = engineKw;
+
+            // get this when you have all parameters above. Should be only one car
+            int carId = _context.Car
+                .SingleOrDefault(c =>
+                    c.Make == make &&
+                    c.Model == model &&
+                    c.Variant == variant &&
+                    c.Body == body &&
+                    c.EngineCcm == engineCcm &&
+                    c.EngineFuel == engineFuel &&
+                    c.EngineHp == engineHp &&
+                    c.EngineKw == engineKw &&
+                    c.Type == type)
+                .Id;
+
+            // show specific products (of chosen category) compatible with specific car
+            return RedirectToAction("PickedCarChooseProductCategory", new { carId });
         }
 
+        // GET /car/{carId}/
+        // GET /car/{carId}/category/{categoryId}
+        [AllowAnonymous]
+        public IActionResult PickedCarChooseProductCategory(int carId, int categoryId = 0)
+        {
+            var car = _context.Car.SingleOrDefault(c => c.Id == carId);
+            ViewData["make"] = car.Make;
+            ViewData["model"] = car.Model;
+            ViewData["variant"] = car.Variant;
+            ViewData["body"] = car.Body;
+            ViewData["type"] = car.Type;
+            ViewData["engineCcm"] = car.EngineCcm;
+            ViewData["engineHp"] = car.EngineHp;
+            ViewData["engineKw"] = car.EngineKw;
+            ViewData["engineFuel"] = car.EngineFuel;
+            if (categoryId == 0)
+            {
+                return RedirectToAction("Index", "Home", null);
+            }
+
+            return View();
+        }
+
+        [AllowAnonymous]
         public IActionResult CompatibleProducts(int categoryId, int carId)
         {
-            return View(); // select products of {categoryId} which have CompatibilitySetting rows matching car with car ID = {carId}
+            var compatibleProducts = new CompatibleProductsVM();
+            var car = _context.Car.SingleOrDefault(c => c.Id == carId);
+            compatibleProducts.Category = _context.ProductCategory.SingleOrDefault(pc => pc.Id == categoryId);
+
+            compatibleProducts.Car = new CarInformationVM()
+            {
+                Make = car.Make,
+                Model = car.Model,
+                Variant = car.Variant,
+                Body = car.Body,
+                Type = car.Type,
+                EngineCcm = car.EngineCcm,
+                EngineHp = car.EngineHp,
+                EngineKw = car.EngineKw,
+                EngineFuel = car.EngineFuel
+            };
+
+            compatibleProducts.Products = _context.Product
+                .Include(p => p.CompatibilitySettings)
+                .Where(p => p.ProductCategoryId == categoryId).Where(p =>
+                    p.CompatibilitySettings.Any(cs =>
+                        (cs.Variant == car.Variant || cs.Variant == "NULL") &&
+                        (cs.Model == car.Model || cs.Model == "NULL") &&
+                        (cs.Make == car.Make || cs.Make == "NULL")))
+                .OrderBy(p => p.Id)
+                .Select(p => new ProductInformationVM()
+                {
+                    Name = p.Name,
+                    Description = p.Description,
+                    Price = p.Price
+                })
+                .ToList();
+            //{
+            //    foreach (var cs in p.CompatibilitySettings)
+            //    {
+            //        if (cs.Variant == "NULL" || cs.Variant == car.Variant)
+            //        {
+            //            if (cs.Model == "NULL" || cs.Model == car.Model)
+            //            {
+            //                if (cs.Make == "NULL" || cs.Make == car.Make)
+            //                {
+            //                    return true;
+            //                }
+            //            }
+            //        }
+            //    }
+
+            //    return false;
+            //})
+            //.ToList();
+
+            return View(compatibleProducts); // select products of {categoryId} which have CompatibilitySetting rows matching car with car ID = {carId}
         }
 
 
