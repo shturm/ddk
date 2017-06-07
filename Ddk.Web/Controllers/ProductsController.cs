@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using Ddk.Data;
 using Ddk.Data.Entities;
 using Microsoft.AspNetCore.Authorization;
+using Ddk.Web.Models;
 
 namespace Ddk.Web.Controllers
 {
@@ -32,32 +33,37 @@ namespace Ddk.Web.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
-        // GET /products/{categoryId}/
-        // GET /products/{categoryId}?make=BMW
-        // GET /products/{categoryId}?make=BMW&Model=3 Series
-        // GET /products/{categoryId}?make=BMW&Model=3 Series&Variant=E46
+        // GET /category/{categoryId}/
+        // GET /category/{categoryId}?make=BMW
+        // GET /category/{categoryId}?make=BMW&Model=3 Series
+        // GET /category/{categoryId}?make=BMW&Model=3 Series&Variant=E46
         //...
-        // GET /products/{categoryId}?make=BMW&Model=3 Series&Variant=E46....
+        // GET /category/{categoryId}?make=BMW&Model=3 Series&Variant=E46....
         // no year-from/to because will add as a filter feature later on
+        [AllowAnonymous]
         public IActionResult PickedProductCategoryChooseCar(int categoryId,
                                                             string make = null, 
                                                             string model = null, string variant = null, string body = null, 
                                                             string type = null, int engineCcm = 0, int engineHp = 0, int engineKw = 0, string engineFuel = null)
         {
-            
+            ChooseCarVm chooseCarVm = new ChooseCarVm();
+
             if (make == null)
             {
-                return View(); // view with all makes - https://www.autopower.bg/avtochasti-audi.html
+                List<string> makes = _context.Car.Select(x => x.Make).Distinct().ToList();
+                ViewData["categoryId"] = categoryId;
+
+                return View("PickedCategoryChooseMake", makes); // view with all makes - https://www.autopower.bg/avtochasti-audi.html
             }
 
             if (model == null)
             {
-                return View(); // show all disctinct combinations of model/variant/body for current make
+                return View("PickedCategoryChooseModelVariantBody", chooseCarVm); // show all disctinct combinations of model/variant/body for current make
             }
 
             if (type == null)
             {
-                return View(); // show all distinct combinations of type/engineCcm/engineHp/engineKw/engineFuel with current make, model, variant and body
+                return View("PickedCategoryChooseTypeEngine", chooseCarVm); // show all distinct combinations of type/engineCcm/engineHp/engineKw/engineFuel with current make, model, variant and body
             }
 
             int carId = 0; // get this when you have all parameters above. Should be only one car

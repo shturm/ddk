@@ -87,6 +87,10 @@ namespace Ddk
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
+
+                //routes.MapRoute(
+                //    name: "PickedCategoryChooseCar",
+                //    template: "category/{categoryId}"); // ProductsController.PickedProductCategoryChooseCar(...)
             });
         }
     }
