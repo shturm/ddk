@@ -1,5 +1,4 @@
-@model IEnumerable<ChooseModelVariantBodyVM>
-
+﻿@model IEnumerable<IGrouping<string, ChooseModelVariantBodyVM>>
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,18 +8,29 @@
     @Model.Count()
 </h2>
 
-<ul>
-    @foreach (var mvb in Model)
-    {
-        var url = "/Products/ChooseCar/";
-        url += "?make=" + ViewData["make"];
-        url += "&model=" + mvb.Model;
-        url += "&variant=" + mvb.Variant;
-        url += "&body=" + mvb.Body;
-        <li>
-            <a href="@url">
-                @mvb.ToString()
-            </a>
-        </li>
-    }
-</ul>
+<div class="row">
+    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+        @foreach (var group in Model)
+        {
+            <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+                <h4>
+                    @group.Key
+                </h4>
+                <ol>
+                    @foreach (var mvb in group)
+                    {
+                        var currUrl = ViewData["url"];
+                        currUrl += "&model=" + mvb.Model;
+                        currUrl += "&variant=" + mvb.Variant;
+                        currUrl += "&body=" + mvb.Body;
+                        <li>
+                            <a href="@currUrl">
+                                @mvb.ToString()
+                            </a>
+                        </li>
+                    }
+                </ol>
+            </div>
+        }
+    </div>
+</div>
