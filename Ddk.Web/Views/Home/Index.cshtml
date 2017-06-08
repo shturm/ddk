@@ -84,7 +84,15 @@
                 <ol>
                 @foreach (var subCat in rootCat.Children.OrderByDescending(sc=>sc.Products.Count))
                 {
-                    <li><a href="/Products/PickedProductCategoryChooseCar/?categoryId=@subCat.Id">@subCat.Name (@subCat.Products?.Count)</a></li>
+                    var url = "/Products/PickedProductCategoryChooseCar/?categoryId=" + subCat.Id;
+                    if (ViewData["carId"] != null)
+                    {
+                        url = "/Products/PickedCarChooseProductCategory/";
+                        url += "?carId=" + ViewData["carId"];
+                        url += "&categoryId=" + subCat.Id;
+                    }
+
+                    <li><a href="@url">@subCat.Name (@subCat.Products?.Count)</a></li>
                 }
                 </ol>
             </div>

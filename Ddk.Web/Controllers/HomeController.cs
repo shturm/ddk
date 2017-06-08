@@ -19,8 +19,13 @@ namespace Ddk.Controllers
             _db = db;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(int carId = 0)
         {
+            if (carId != 0)
+            {
+                ViewData["carId"] = carId;
+            }
+
             IEnumerable<ProductCategory> categories = _db.ProductCategory
                 .Where(c => c.ParentId == null)
                 .Include("Children.Products")

@@ -233,22 +233,14 @@ namespace Ddk.Web.Controllers
         [AllowAnonymous]
         public IActionResult PickedCarChooseProductCategory(int carId, int categoryId = 0)
         {
-            var car = _context.Car.SingleOrDefault(c => c.Id == carId);
-            ViewData["make"] = car.Make;
-            ViewData["model"] = car.Model;
-            ViewData["variant"] = car.Variant;
-            ViewData["body"] = car.Body;
-            ViewData["type"] = car.Type;
-            ViewData["engineCcm"] = car.EngineCcm;
-            ViewData["engineHp"] = car.EngineHp;
-            ViewData["engineKw"] = car.EngineKw;
-            ViewData["engineFuel"] = car.EngineFuel;
             if (categoryId == 0)
             {
-                return RedirectToAction("Index", "Home", null);
+                return RedirectToAction("Index", "Home", new { carId });
             }
-
-            return View();
+            else
+            {
+                return RedirectToAction("CompatibleProducts", new { categoryId, carId });
+            }
         }
 
         [AllowAnonymous]
