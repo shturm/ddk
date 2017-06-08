@@ -31,9 +31,24 @@ namespace Ddk.Controllers
                 .Include("Children.Products")
                 .OrderByDescending(c=>c.Products.Count)
                 .ToList();
-            IEnumerable<string> cars = _db.Car.OrderBy(c => c.Make).Select(c => c.Make).Distinct().ToList();
-            var vm = new HomeVM();
-            vm.Cars = cars.Select(make => new CarBrandModel() { Make = make }).ToList();
+            IEnumerable<string> carMakes = _db.Car.OrderBy(c => c.Make).Select(c => c.Make).Distinct().ToList();
+            var vm = new HomeVM()
+            {
+                Cars = new List<List<CarBrandModel>>()
+            };
+
+            var index = 0;
+            foreach (var make in carMakes)
+            {
+                if (index % 62 == 0)
+                {
+                    vm.Cars.Add(new List<CarBrandModel>());
+                }
+
+                vm.Cars.Last().Add(new CarBrandModel() { Make = make});
+                index++;
+            }
+            
             vm.Categories = categories;
 
             return View(vm);

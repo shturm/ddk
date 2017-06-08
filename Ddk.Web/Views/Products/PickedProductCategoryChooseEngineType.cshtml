@@ -11,9 +11,10 @@
 <ul>
     @foreach (var engine in Model)
     {
-        var url = Url.Action("ChooseCar", "Products",
+        var url = Url.Action("PickedProductCategoryChooseCar", "Products",
             new
             {
+                categoryId = ViewData["categoryId"],
                 make = ViewData["make"],
                 model = ViewData["model"],
                 variant = ViewData["variant"],

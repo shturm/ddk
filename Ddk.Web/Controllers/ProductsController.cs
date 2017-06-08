@@ -40,47 +40,23 @@ namespace Ddk.Web.Controllers
         // GET /category/{categoryId}?make=BMW&Model=3 Series&Variant=E46....
         // no year-from/to because will add as a filter feature later on
         [AllowAnonymous]
-        public IActionResult PickedProductCategoryChooseCar(int categoryId,
-                                                            string make = null,
-                                                            string model = null, string variant = null, string body = null,
-                                                            string engineFuel = null, string type = null, int engineCcm = 0, int engineHp = 0, int engineKw = 0)
+        public IActionResult PickedProductCategoryChooseCar(
+            int categoryId,
+            string make = null,
+            string model = null, string variant = null, string body = null,
+            string engineFuel = null, string type = null, int engineCcm = 0, int engineHp = 0, int engineKw = 0)
         {
             if (make == null)
             {
-                ViewData["categoryId"] = categoryId;
-                return this.ChooseCarMake();
+                return this.ChooseCarMake(categoryId);
             }
-
-            if (model == null)
+            else if (model == null)
             {
-                var url = "/Products/PickedProductCategoryChooseCar/";
-                url += "?categoryId=" + categoryId;
-                url += "&make=" + make;
-
-                ViewData["categoryId"] = categoryId;
-                ViewData["make"] = make;
-                ViewData["url"] = url;
-
-                return this.ChooseModelVariantBody(make);
+                return this.ChooseModelVariantBody(categoryId, make);
             }
-
-            if (engineFuel == null)
+            else if (engineFuel == null)
             {
-                var url = "/Products/PickedProductCategoryChooseCar/";
-                url += "?categoryId=" + categoryId;
-                url += "&make=" + make;
-                url += "&model=" + model;
-                url += "&variant=" + variant;
-                url += "&body=" + body;
-
-                ViewData["categoryId"] = categoryId;
-                ViewData["make"] = make;
-                ViewData["model"] = model;
-                ViewData["variant"] = variant;
-                ViewData["body"] = body;
-                ViewData["url"] = url;
-
-                return this.ChooseEngineType(make, model, variant, body);
+                return this.ChooseEngineType(categoryId, make, model, variant, body);
             }
 
             ViewData["type"] = type;
@@ -110,41 +86,22 @@ namespace Ddk.Web.Controllers
         // GET /car/{carId}/
         // GET /car/{carId}/category/{categoryId}
         [AllowAnonymous]
-        public IActionResult ChooseCar(string make = null,
-                                       string model = null, string variant = null, string body = null,
-                                       string engineFuel = null, string type = null, int engineCcm = 0, int engineHp = 0, int engineKw = 0)
+        public IActionResult ChooseCar(
+            string make = null,
+            string model = null, string variant = null, string body = null,
+            string engineFuel = null, string type = null, int engineCcm = 0, int engineHp = 0, int engineKw = 0)
         {
             if (make == null)
             {
                 return RedirectToAction("Index");
             }
-
-            if (model == null)
+            else if (model == null)
             {
-                var url = "/Products/ChooseCar/";
-                url += "?make=" + make;
-
-                ViewData["make"] = make;
-                ViewData["url"] = url;
-
-                return this.ChooseModelVariantBody(make);
+                return this.ChooseModelVariantBody(null, make);
             }
-
-            if (engineFuel == null)
+            else if (engineFuel == null)
             {
-                var url = "/Products/ChooseCar/";
-                url += "?make=" + make;
-                url += "&model=" + model;
-                url += "&variant=" + variant;
-                url += "&body=" + body;
-
-                ViewData["make"] = make;
-                ViewData["model"] = model;
-                ViewData["variant"] = variant;
-                ViewData["body"] = body;
-                ViewData["url"] = url;
-
-                return RedirectToAction("ChooseEngineType", new { make, model, variant, body });
+                return this.ChooseEngineType(null, make, model, variant, body);
             }
 
             ViewData["type"] = type;
@@ -371,15 +328,35 @@ namespace Ddk.Web.Controllers
             return _context.Product.Any(e => e.Id == id);
         }
 
-        private IActionResult ChooseCarMake()
+        private IActionResult ChooseCarMake(int? categoryId)
         {
             var makes = _context.Car.Select(x => x.Make).Distinct().ToList();
 
-            // view with all makes - https://www.autopower.bg/avtochasti-audi.html
-            return View("ChooseMake", makes);
+            var index = 0;
+            var matrix = new List<List<string>>();
+            foreach (var make in makes)
+            {
+                if (index % 62 == 0)
+                {
+                    matrix.Add(new List<string>());
+                }
+
+                matrix.Last().Add(make);
+                index++;
+            }
+
+            if (categoryId == null)
+            {
+                return View("ChooseMake", matrix);
+            }
+            else
+            {
+                ViewData["categoryId"] = categoryId;
+                return View("PickedProductCategoryChooseMake", matrix);
+            }
         }
 
-        private IActionResult ChooseModelVariantBody(string make)
+        private IActionResult ChooseModelVariantBody(int? categoryId, string make)
         {
             var modelVariantBodyCombinations = _context.Car
                 .OrderBy(x => x.Model)
@@ -394,20 +371,42 @@ namespace Ddk.Web.Controllers
                 })
                 .Distinct()
                 .Select(x => x.First())
-                .Select(x => new ChooseModelVariantBodyVM()
-                {
-                    Model = x.Model,
-                    Variant = x.Variant,
-                    Body = x.Body
-                })
-                .AsEnumerable()
-                .GroupBy(mvb => mvb.Model);
+                .Select(x =>
+                    new ChooseModelVariantBodyVM()
+                    {
+                        Model = x.Model,
+                        Variant = x.Variant,
+                        Body = x.Body
+                    })
+                .AsEnumerable();
 
-            // show all disctinct combinations of model/variant/body for current make
-            return View("ChooseModelVariantBody", modelVariantBodyCombinations);
+            var index = 0;
+            var matrix = new List<List<ChooseModelVariantBodyVM>>();
+            foreach (var mvb in modelVariantBodyCombinations)
+            {
+                if (index % 50 == 0)
+                {
+                    matrix.Add(new List<ChooseModelVariantBodyVM>());
+                }
+
+                matrix.Last().Add(mvb);
+                index++;
+            }
+
+            ViewData["make"] = make;
+
+            if (categoryId == null)
+            {
+                return View("ChooseModelVariantBody", matrix);
+            }
+            else
+            {
+                ViewData["categoryId"] = categoryId;
+                return View("PickedProductCategoryChooseModelVariantBody", matrix);
+            }
         }
 
-        private IActionResult ChooseEngineType(string make, string model, string variant, string body)
+        private IActionResult ChooseEngineType(int? categoryId, string make, string model, string variant, string body)
         {
             var engineOptions = _context.Car
                 .OrderBy(c => c.Type)
@@ -428,8 +427,20 @@ namespace Ddk.Web.Controllers
                 .Select(x => x.Key)
                 .AsEnumerable();
 
-            // show all distinct combinations of type/engineCcm/engineHp/engineKw/engineFuel with current make, model, variant and body
-            return View("ChooseEngineType", engineOptions);
+            ViewData["make"] = make;
+            ViewData["model"] = model;
+            ViewData["variant"] = variant;
+            ViewData["body"] = body;
+
+            if (categoryId == null)
+            {
+                return View("ChooseEngineType", engineOptions);
+            }
+            else
+            {
+                ViewData["categoryId"] = categoryId;
+                return View("PickedProductCategoryChooseEngineType", engineOptions);
+            }
         }
     }
 }

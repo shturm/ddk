@@ -9,6 +9,6 @@ namespace Ddk.Web.Models
     public class HomeVM
     {
         public IEnumerable<ProductCategory> Categories { get; set; }
-        public IEnumerable<CarBrandModel> Cars { get; set; }
+        public List<List<CarBrandModel>> Cars { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-@model IEnumerable<IEnumerable<string>>
+﻿@model IEnumerable<IEnumerable<string>>
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -16,11 +16,12 @@
                 <ul>
                     @foreach (var make in row)
                     {
-                    var url = Url.Action("ChooseCar", "Products",
-                       new
-                       {
-                           make = make
-                       });
+                        var url = Url.Action("PickedProductCategoryChooseCar", "Products",
+                           new
+                           {
+                               categoryId = ViewData["categoryId"],
+                               make = make
+                           });
 
                         <li>
                             <a href="@url">@make</a>

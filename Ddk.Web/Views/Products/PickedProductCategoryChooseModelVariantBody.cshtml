@@ -1,4 +1,4 @@
-﻿@model IEnumerable<IEnumerable<ChooseModelVariantBodyVM>>
+@model IEnumerable<IEnumerable<ChooseModelVariantBodyVM>>
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -9,19 +9,20 @@
 </h2>
 
 <div class="row">
-    <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         @foreach (var row in Model)
         {
             <div class="col-lg-4 col-md-4 col-sm-8 col-xs-8">
                 @*<h4>
-                    @group.Key
-                </h4>*@
+                        @group.Key
+                    </h4>*@
                 <ul>
                     @foreach (var col in row)
                     {
-                        var url = Url.Action("ChooseCar", "Products",
+                        var url = Url.Action("PickedProductCategoryChooseCar", "Products",
                             new
                             {
+                                categoryId = ViewData["categoryId"],
                                 make = ViewData["make"],
                                 model = col.Model,
                                 variant = col.Variant,
