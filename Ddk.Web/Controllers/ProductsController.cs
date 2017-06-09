@@ -347,7 +347,7 @@ namespace Ddk.Web.Controllers
 
         private IActionResult ChooseCarMake(int? categoryId)
         {
-            var makes = _context.Car.Select(x => x.Make).Distinct().ToList();
+            var makes = _context.Car.OrderBy(c => c.Make).Select(x => x.Make).Distinct().ToList();
 
             var index = 0;
             var matrix = new List<List<string>>();
@@ -425,9 +425,9 @@ namespace Ddk.Web.Controllers
 
         private IActionResult ChooseEngineType(int? categoryId, string make, string model, string variant, string body)
         {
-            var engineOptions = _context.Car
-                .OrderBy(c => c.Type)
-                .ThenBy(c => c.EngineFuel)
+            IEnumerable<IGrouping<string, ChooseEngineVM>> engineOptions = _context.Car
+                .OrderBy(c => c.EngineFuel)
+                .ThenBy(c => c.EngineHp)
                 .Where(c =>
                     c.Make == make &&
                     c.Model == model &&
@@ -442,7 +442,8 @@ namespace Ddk.Web.Controllers
                     Type = c.Type
                 })
                 .Select(x => x.Key)
-                .AsEnumerable();
+                .AsEnumerable()
+                .GroupBy(x => x.Fuel);
 
             ViewData["make"] = make;
             ViewData["model"] = model;

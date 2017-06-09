@@ -1,12 +1,17 @@
 @model IEnumerable<IEnumerable<string>>
 
 @{
+    ViewData["Title"] = "Избор на Марка";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>
-    @Model.Count()
+    @ViewData["Title"]
 </h2>
+
+<h4>
+    @Model.Count()
+</h4>
 
 <div class="row">
     <div class="col-lg-9 col-md-9 col-sm-12 col-xs-12">

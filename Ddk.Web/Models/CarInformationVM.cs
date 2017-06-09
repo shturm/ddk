@@ -25,7 +25,7 @@
         public override string ToString()
         {
             return string.Concat(Make, " ", Model, " ", Variant, " ", Body, " ", 
-                Type, " - ", EngineCcm, " - ", EngineHp, " - ", EngineKw, " - ", EngineFuel, " - ");
+                Type, " ", "( ", EngineFuel, ", Кубици ", EngineCcm, ", Конски сили ", EngineHp, ", Киловата ", EngineKw, ", "," )");
         }
     }
 }

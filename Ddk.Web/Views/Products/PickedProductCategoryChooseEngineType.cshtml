@@ -1,35 +1,47 @@
-@model IEnumerable<ChooseEngineVM>
+﻿@model IEnumerable<IGrouping<string, ChooseEngineVM>>
 
 @{
+    ViewData["Title"] = "Избор на Двигател";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>
-    @Model.Count()
+    @ViewData["Title"]
 </h2>
 
-<ul>
-    @foreach (var engine in Model)
-    {
-        var url = Url.Action("PickedProductCategoryChooseCar", "Products",
-            new
-            {
-                categoryId = ViewData["categoryId"],
-                make = ViewData["make"],
-                model = ViewData["model"],
-                variant = ViewData["variant"],
-                body = ViewData["body"],
-                engineFuel = engine.Fuel,
-                engineCcm = engine.Ccm,
-                engineHp = engine.Hp,
-                engineKw = engine.Kw,
-                type = engine.Type
-            });
+<h4>
+    @Model.Count()
+</h4>
 
-        <li>
-            <a href="@url">
-                @engine.ToString()
-            </a>
-        </li>
-    }
-</ul>
+@foreach (var group in Model)
+{
+    <h3>
+        @group.Key
+    </h3>
+    <ul>
+        @foreach (var engine in group)
+        {
+
+            var url = Url.Action("PickedProductCategoryChooseCar", "Products",
+                new
+                {
+                    categoryId = ViewData["categoryId"],
+                    make = ViewData["make"],
+                    model = ViewData["model"],
+                    variant = ViewData["variant"],
+                    body = ViewData["body"],
+                    engineFuel = engine.Fuel,
+                    engineCcm = engine.Ccm,
+                    engineHp = engine.Hp,
+                    engineKw = engine.Kw,
+                    type = engine.Type
+                });
+
+            <li>
+                <a href="@url">
+                    @engine.ToString()
+                </a>
+            </li>
+        }
+    </ul>
+}
