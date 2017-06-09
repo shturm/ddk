@@ -22,7 +22,7 @@
                     </a>
                 </div>
                 <br />
-                <a asp-controller="Products" asp-action="Details" asp-route-productId="@product.Id" asp-route-carInfo="@Model.Car.ToString()">
+                <a asp-controller="Products" asp-action="Details" asp-route-productId="@product.Id" asp-route-carId="@Model.Car.Id">
                     <span>
                         @Html.DisplayFor(model => product.Name)
                     </span>

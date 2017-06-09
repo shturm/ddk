@@ -7,13 +7,13 @@ namespace Ddk.Web.Models
     {
         public CompatibleProductsVM()
         {
-            this.Products = new List<ProductInformationVM>();
+            this.Products = new List<ProductVM>();
         }
 
-        public CarInformationVM Car { get; set; }
+        public CarVM Car { get; set; }
 
         public ProductCategory Category { get; set; }
 
-        public List<ProductInformationVM> Products { get; set; }
+        public List<ProductVM> Products { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿namespace Ddk.Web.Models
 {
-    public class ProductInformationVM
+    public class ProductVM
     {
         public int Id { get; set; }
 

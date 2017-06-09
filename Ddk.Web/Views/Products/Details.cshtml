@@ -4,9 +4,15 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h4>
-    Информация за продукт
-</h4>
+<h1>
+    @Html.DisplayFor(m => m.Category.Name)
+    за
+    @Model.Car.ToString()
+</h1>
+
+<h2>
+    @Html.DisplayFor(m => m.Name)
+</h2>
 
 <div class="container-fluid">
     <div class="col-md-2 picture-container">
@@ -24,13 +30,17 @@
                 Автомобил:
             </dt>
             <dd>
-                @Html.DisplayFor(m => m.CarInformation)
+                @Html.Display(Model.Car.ToString())
             </dd>
             <dt>
                 Категория:
             </dt>
             <dd>
-                @Html.DisplayFor(m => m.CategoryName)
+                @Html.DisplayFor(m => m.Category.ParentName)
+                <span> > </span>
+                <a asp-controller="Products" asp-action="CompatibleProducts" asp-route-categoryId="@Model.Category.Id" asp-route-carId="@Model.Car.Id">
+                    @Html.DisplayFor(m => m.Category.Name)
+                </a>
             </dd>
             <dt>
                 Цена:

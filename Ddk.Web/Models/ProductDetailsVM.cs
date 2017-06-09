@@ -10,9 +10,9 @@
 
         public decimal Price { get; set; }
 
-        public string CarInformation { get; set; }
+        public CarVM Car { get; set; }
 
-        public string CategoryName { get; set; }
+        public CategoryVM Category { get; set; }
 
         public override string ToString()
         {

@@ -1,6 +1,6 @@
 ﻿namespace Ddk.Web.Models
 {
-    public class CarInformationVM
+    public class CarVM
     {
         public int Id { get; set; }
 
@@ -25,7 +25,7 @@
         public override string ToString()
         {
             return string.Concat(Make, " ", Model, " ", Variant, " ", Body, " ", 
-                Type, " ", "( ", EngineFuel, ", Кубици ", EngineCcm, ", Конски сили ", EngineHp, ", Киловата ", EngineKw, ", "," )");
+                Type, " ", "( ", EngineFuel, ", куб.см. ", EngineCcm, ", к.с. ", EngineHp, ", кВ ", EngineKw, ", "," )");
         }
     }
 }

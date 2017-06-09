@@ -149,8 +149,9 @@ namespace Ddk.Web.Controllers
             var car = _context.Car.SingleOrDefault(c => c.Id == carId);
             var compatibleProducts = new CompatibleProductsVM();
             compatibleProducts.Category = _context.ProductCategory.SingleOrDefault(pc => pc.Id == categoryId);
-            compatibleProducts.Car = new CarInformationVM()
+            compatibleProducts.Car = new CarVM()
             {
+                Id = car.Id,
                 Make = car.Make,
                 Model = car.Model,
                 Variant = car.Variant,
@@ -169,7 +170,7 @@ namespace Ddk.Web.Controllers
                         (cs.Model == car.Model || cs.Model == "NULL") &&
                         (cs.Make == car.Make || cs.Make == "NULL")))
                 .OrderBy(p => p.Id)
-                .Select(p => new ProductInformationVM()
+                .Select(p => new ProductVM()
                 {
                     Id = p.Id,
                     Name = p.Name,
@@ -185,22 +186,30 @@ namespace Ddk.Web.Controllers
 
         // GET: Products/Details/5
         [AllowAnonymous]
-        public IActionResult Details(int? productId, string carInfo)
+        public IActionResult Details(int? productId, int? carId)
         {
             if (productId == null)
             {
                 return NotFound();
             }
-            else if (carInfo == null)
+            else if (carId == null)
             {
                 return NotFound();
             }
 
             var product = _context.Product
                 .Include(p => p.ProductCategory)
+                    .ThenInclude(cp => cp.Parent)
                 .SingleOrDefault(m => m.Id == productId);
-            
+
             if (product == null)
+            {
+                return NotFound();
+            }
+
+            var car = _context.Car.SingleOrDefault(c => c.Id == carId);
+
+            if (car == null)
             {
                 return NotFound();
             }
@@ -211,8 +220,25 @@ namespace Ddk.Web.Controllers
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
-                CarInformation = carInfo,
-                CategoryName = product.ProductCategory.Name
+                Category = new CategoryVM()
+                {
+                    Id = product.ProductCategory.Id,
+                    Name = product.ProductCategory.Name,
+                    ParentName = product.ProductCategory.Parent.Name
+                },
+                Car = new CarVM()
+                {
+                    Id = car.Id,
+                    Make = car.Make,
+                    Model = car.Model,
+                    Variant = car.Variant,
+                    Body = car.Body,
+                    Type = car.Type,
+                    EngineCcm = car.EngineCcm,
+                    EngineHp = car.EngineHp,
+                    EngineKw = car.EngineKw,
+                    EngineFuel = car.EngineFuel
+                }
             };
 
             return View(productVM);
