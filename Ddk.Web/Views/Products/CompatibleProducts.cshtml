@@ -8,15 +8,30 @@
 
 <h4>@Model.Car.ToString()</h4>
 
-<h2>Category Id: @Model.Category.Id</h2>
+<hr />
 
-<h4>Products count: @Model.Products.Count</h4>
-
-<ul>
-    @foreach (var product in Model.Products)
-    {
-        <li>
-            @product.ToString()
-        </li>
-    }
-</ul>
+<div class="container-fluid">
+    <div class="row">
+        @foreach (var product in Model.Products)
+        {
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5 table-bordered" 
+                 style="border-radius: 10px; height: 300px; margin-left: 3px; margin-top: 3px; text-align: center; border-color: lightcoral;">
+                <div style="align-content: center;">
+                    <a asp-controller-for="Products" asp-action-for="Details" asp-route-id="@product.Id">
+                        <img src="https://www.autopower.bg/images/no_pic.jpg" style="height: 175px; align-self: center;" />
+                    </a>
+                </div>
+                <br />
+                <a asp-controller="Products" asp-action="Details" asp-route-productId="@product.Id" asp-route-carInfo="@Model.Car.ToString()">
+                    <span>
+                        @Html.DisplayFor(model => product.Name)
+                    </span>
+                </a>
+                <br />
+                <label>
+                    @Html.DisplayFor(model => product.Price) leva
+                </label>
+            </div>
+        }
+    </div>
+</div>

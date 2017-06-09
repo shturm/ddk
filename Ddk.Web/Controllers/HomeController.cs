@@ -37,18 +37,12 @@ namespace Ddk.Controllers
                 Cars = new List<List<CarBrandModel>>()
             };
 
-            var index = 0;
+            vm.Cars.Add(new List<CarBrandModel>());
             foreach (var make in carMakes)
             {
-                if (index % 62 == 0)
-                {
-                    vm.Cars.Add(new List<CarBrandModel>());
-                }
-
-                vm.Cars.Last().Add(new CarBrandModel() { Make = make});
-                index++;
+                vm.Cars.Last().Add(new CarBrandModel() { Make = make });
             }
-            
+
             vm.Categories = categories;
 
             return View(vm);

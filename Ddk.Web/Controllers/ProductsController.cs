@@ -171,6 +171,7 @@ namespace Ddk.Web.Controllers
                 .OrderBy(p => p.Id)
                 .Select(p => new ProductInformationVM()
                 {
+                    Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
                     Price = p.Price
@@ -183,22 +184,38 @@ namespace Ddk.Web.Controllers
 
 
         // GET: Products/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [AllowAnonymous]
+        public IActionResult Details(int? productId, string carInfo)
         {
-            if (id == null)
+            if (productId == null)
+            {
+                return NotFound();
+            }
+            else if (carInfo == null)
             {
                 return NotFound();
             }
 
-            var product = await _context.Product
+            var product = _context.Product
                 .Include(p => p.ProductCategory)
-                .SingleOrDefaultAsync(m => m.Id == id);
+                .SingleOrDefault(m => m.Id == productId);
+            
             if (product == null)
             {
                 return NotFound();
             }
 
-            return View(product);
+            var productVM = new ProductDetailsVM()
+            {
+                Id = product.Id,
+                Name = product.Name,
+                Description = product.Description,
+                Price = product.Price,
+                CarInformation = carInfo,
+                CategoryName = product.ProductCategory.Name
+            };
+
+            return View(productVM);
         }
 
         // GET: Products/Create

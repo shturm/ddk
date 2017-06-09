@@ -2,6 +2,8 @@
 {
     public class CarInformationVM
     {
+        public int Id { get; set; }
+
         public string Make { get; set; }
 
         public string Model { get; set; }
@@ -22,7 +24,7 @@
 
         public override string ToString()
         {
-            return string.Concat(Make, " - ", Model, " - ", Variant, " - ", Body, " - ", 
+            return string.Concat(Make, " ", Model, " ", Variant, " ", Body, " ", 
                 Type, " - ", EngineCcm, " - ", EngineHp, " - ", EngineKw, " - ", EngineFuel, " - ");
         }
     }
