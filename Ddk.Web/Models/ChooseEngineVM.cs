@@ -14,7 +14,7 @@
 
         public override string ToString()
         {
-            return string.Concat(Fuel, " ", Type, " ", Ccm, " ", Hp, " ", Kw);
+            return $"{Fuel} {Type}, {Ccm} куб.см., {Hp} к.с., {Kw} кВ";
         }
     }
 }

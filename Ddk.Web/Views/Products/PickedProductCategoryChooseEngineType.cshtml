@@ -1,23 +1,22 @@
 ﻿@model IEnumerable<IGrouping<string, ChooseEngineVM>>
 
 @{
-    ViewData["Title"] = "Избор на Двигател";
+    string item = ViewData["categoryName"]?.ToString() ?? "Авточасти";
+    ViewData["Title"] = $"{item} за {ViewData["make"]} {ViewData["model"]} {ViewData["variant"]} {ViewData["body"]}";
+    
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>
+<h1>
     @ViewData["Title"]
-</h2>
+</h1>
 
-<h4>
-    @Model.Count()
-</h4>
+<p> <b>Изберете двигател</b></p>
+
 
 @foreach (var group in Model)
 {
-    <h3>
-        @group.Key
-    </h3>
+
     <ul>
         @foreach (var engine in group)
         {
