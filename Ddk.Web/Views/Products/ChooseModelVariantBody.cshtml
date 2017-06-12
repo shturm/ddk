@@ -1,7 +1,7 @@
 ﻿@model IEnumerable<IEnumerable<ChooseModelVariantBodyVM>>
 
 @{
-    ViewData["Title"] = "Избор на Модел";
+    ViewData["Title"] = $"Авточасти за {ViewData["make"]}";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -9,9 +9,7 @@
     @ViewData["Title"]
 </h2>
 
-<h4>
-    @Model.Count()
-</h4>
+<p> <b>Изберете модел</b></p>
 
 <div class="row">
     <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
