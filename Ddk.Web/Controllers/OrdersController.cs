@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Ddk.Web.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
