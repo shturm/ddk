@@ -1,7 +1,7 @@
-@model CompatibleProductsVM
+﻿@model CompatibleProductsVM
 
 @{
-    ViewData["Title"] = "CompatibleProducts";
+    ViewData["Title"] = Model.Category.Name;
 }
 
 <h2>@Model.Category.Name</h2>
@@ -14,8 +14,8 @@
     <div class="row">
         @foreach (var product in Model.Products)
         {
-            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5 table-bordered" 
-                 style="border-radius: 10px; height: 300px; margin-left: 3px; margin-top: 3px; text-align: center; border-color: lightcoral;">
+            <div class="col-lg-2 col-md-3 col-sm-4 col-xs-5" 
+                 style="height: 300px; text-align: center;">
                 <div style="align-content: center;">
                     <a asp-controller-for="Products" asp-action-for="Details" asp-route-id="@product.Id">
                         <img src="https://www.autopower.bg/images/no_pic.jpg" style="height: 175px; align-self: center;" />
@@ -29,7 +29,7 @@
                 </a>
                 <br />
                 <label>
-                    @Html.DisplayFor(model => product.Price) leva
+                    @Html.DisplayFor(model => product.Price) Лева
                 </label>
             </div>
         }

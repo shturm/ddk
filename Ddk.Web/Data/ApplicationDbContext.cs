@@ -1,11 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Ddk.Data.Entities;
+using Ddk.Web.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using Ddk.Data.Entities;
-using Ddk.Models;
 
 namespace Ddk.Data
 {
@@ -15,6 +11,7 @@ namespace Ddk.Data
         public DbSet<ProductCategory> ProductCategory { get; set; }
         public DbSet<Car> Car { get; set; }
         public DbSet<CompatibilitySetting> CompatibilitySetting { get; set; }
+        public DbSet<Order> Order { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -28,6 +25,5 @@ namespace Ddk.Data
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
         }
-                
     }
 }

@@ -53,61 +53,38 @@
 </div>
 
 <br />
-<div class="col-md-12">
-    <form asp-controller="" asp-action="">
-        <fieldset class="form-horizontal col-md-3" style="border: 1px solid green; border-radius: 10px;">
-            <br />
-            <div class="form-group">
-                <div class="col-md-12">
-                    <label>
-                        Данни за доставка
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <input class="form-control" placeholder="Име и фамилия" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <input class="form-control" placeholder="Телефон" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <label>
-                        Адрес за доставка
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <input class="form-control" placeholder="Адрес" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <input class="form-control" placeholder="Град / Село" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <label>
-                        Допълнителна информация
-                    </label>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-12">
-                    <input class="form-control" placeholder="Полето не е задължително" />
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-md-offset-6 col-md-4">
-                    <input type="submit" value="Поръчай" class="btn btn-success" />
-                </div>
-            </div>
-        </fieldset>
-    </form>
+<div class="row">
+    @Html.Partial("MakeOrderPartial", Model)
+
+    @Html.Partial("LoginPartial")
+
+    @Html.Partial("RegisterPartial")
 </div>
+
+@section Scripts{
+    <script>
+        var $companyInfo = $(".company-info");
+        var $companyIngfoCheckbox = $(".checkbox-company-info");
+        $companyIngfoCheckbox.on("change", () => {
+            if ($companyIngfoCheckbox.val() == "off") {
+                $companyIngfoCheckbox.val("on");
+                $companyInfo.show();
+            } else {
+                $companyIngfoCheckbox.val("off");
+                $companyInfo.hide();
+            }
+        });
+
+        var $companyName = $(".company-name");
+        var $companyEik = $(".company-eik");
+        var $btnSubmitOrder = $(".submit-order").on("click", () => { 
+            if ($companyName.val() == "" || $companyIngfoCheckbox.val() == "off") {
+                $companyName.val("NULL");
+            }
+
+            if ($companyEik.val() == "" || $companyIngfoCheckbox.val() == "off") {
+                $companyEik.val("NULL");
+            }
+        });
+    </script>
+}

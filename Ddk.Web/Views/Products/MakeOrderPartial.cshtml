@@ -1,0 +1,84 @@
+﻿@model ProductDetailsVM
+
+<form asp-controller="Orders" asp-action="Create" method="post">
+    @Html.AntiForgeryToken()
+    <fieldset class="form-horizontal col-md-3">
+        <div class="form-group">
+            <div class="col-md-12">
+                <label>
+                    Данни за доставка
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <input class="form-control" name="Names" placeholder="Име и фамилия" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <input class="form-control" name="PhoneNumber" placeholder="Телефон" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <label>
+                    Адрес за доставка
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <input class="form-control" name="Address" placeholder="Адрес" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <input class="form-control" name="City" placeholder="Град / Село" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <label>
+                    Допълнителна информация
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <input class="form-control" name="MoreInformation" placeholder="Полето не е задължително" />
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-12">
+                <label>
+                    Фактура
+                </label>
+                <input type="checkbox" class="checkbox-inline checkbox-company-info" value="off"/>
+            </div>
+        </div>
+        <div class="company-info" style="display: none;">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <input class="form-control company-name" name="CompanyName" placeholder="Име на фирма" />
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-md-12">
+                    <input class="form-control company-eik" name="CompanyEIK" placeholder="ЕИК Булстат" />
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <input type="hidden" value="@Model.Id" name="Products[0].Id" />
+            <input type="hidden" value="@Model.Name" name="Products[0].Name" />
+            <input type="hidden" value="@Model.Description" name="Products[0].Description" />
+            <input type="hidden" value="@Model.Price" name="Products[0].Price" />
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-7 col-md-4">
+                <input type="submit" value="Поръчай" class="btn btn-success submit-order" />
+            </div>
+        </div>
+    </fieldset>
+</form>
