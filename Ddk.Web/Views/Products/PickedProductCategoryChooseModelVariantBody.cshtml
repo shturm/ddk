@@ -1,17 +1,17 @@
 ﻿@model IEnumerable<IEnumerable<ChooseModelVariantBodyVM>>
 
 @{
-    ViewData["Title"] = "Избор на Модел";
+    string item = ViewData["categoryName"]?.ToString() ?? "Авточасти";
+    ViewData["Title"] = $"{item} за {ViewData["make"]}";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>
+<h1>
     @ViewData["Title"]
-</h2>
+</h1>
 
-<h4>
-    @Model.Count()
-</h4>
+<p> <b>Изберете модел</b></p>
+
 
 <div class="row">
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">

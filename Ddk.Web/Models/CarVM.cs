@@ -24,8 +24,7 @@
 
         public override string ToString()
         {
-            return string.Concat(Make, " ", Model, " ", Variant, " ", Body, " ", 
-                Type, " ", "( ", EngineFuel, ", куб.см. ", EngineCcm, ", к.с. ", EngineHp, ", кВ ", EngineKw, ", "," )");
+            return $"{Make} {Model} {Variant} {Body} {Type} ({EngineFuel}, {EngineCcm} куб.см., {EngineHp} к.с., {EngineKw} кВ)";
         }
     }
 }
