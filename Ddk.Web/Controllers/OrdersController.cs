@@ -5,8 +5,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
+using Newtonsoft.Json;
 
 namespace Ddk.Web.Controllers
 {
@@ -47,7 +50,29 @@ namespace Ddk.Web.Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            return View();
+            if (HttpContext.Session.IsAvailable)
+            {
+                var objectsAsString = HttpContext.Session.GetString("orderItems");
+
+                var orderItems = JsonConvert.DeserializeObject<List<OrderItemVM>>(objectsAsString);
+                foreach (var orderItem in orderItems)
+                {
+                    var product = _context.Product.SingleOrDefault(p => p.Id == orderItem.ProductId);
+                    if (product != null)
+                    {
+                        orderItem.Name = product.Name;
+                        orderItem.Description = product.Description;
+                        orderItem.Price = product.Price;
+                        orderItem.ImageUrl = product.ImageUrl;
+                    }
+                }
+
+                var orderVm = new OrderVM() { Products = orderItems };
+                return View(orderVm);
+            }
+
+
+            return NotFound();
         }
 
         // POST: Orders/Create
@@ -110,7 +135,7 @@ namespace Ddk.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,OrderDate")] Order order)
+        public async Task<IActionResult> Edit(int id, Order order)
         {
             if (id != order.Id)
             {
@@ -169,19 +194,27 @@ namespace Ddk.Web.Controllers
             return RedirectToAction("Index");
         }
 
-        public IActionResult AddToBasket(int? productId)
+        public void AddToBasket(int productId, int quantity)
         {
-            if (productId == null)
+            if (!_context.Product.Any(p => p.Id == productId))
             {
-                return NotFound();
+                return;
             }
 
-            //if (HttpContext.Session)
+            var key = "orderItems";
+            var objectsCollection = new List<OrderItemVM>();
+            if (HttpContext.Session.IsExists(key))
             {
-
+                var objectsAsString = HttpContext.Session.GetString(key);
+                objectsCollection = JsonConvert.DeserializeObject<List<OrderItemVM>>(objectsAsString);
             }
 
-            return View();
+
+            objectsCollection.Add(new OrderItemVM() { ProductId = productId, Quantity = quantity });
+
+            var result = JsonConvert.SerializeObject(objectsCollection);
+
+            HttpContext.Session.SetString(key, result);
         }
 
         private bool OrderExists(int id)

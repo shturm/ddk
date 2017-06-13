@@ -6,7 +6,7 @@ namespace Ddk.Web.Models
     {
         public OrderVM()
         {
-            this.Products = new List<ProductVM>();
+            this.Products = new List<OrderItemVM>();
         }
 
         public int Id { get; set; }
@@ -27,6 +27,6 @@ namespace Ddk.Web.Models
 
         public string CompanyEIK { get; set; }
 
-        public ICollection<ProductVM> Products { get; set; }
+        public ICollection<OrderItemVM> Products { get; set; }
     }
 }

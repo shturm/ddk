@@ -1,4 +1,4 @@
-@model Ddk.Web.Data.Entities.Order
+﻿@model OrderVM
 
 @{
     ViewData["Title"] = "Create";
@@ -11,17 +11,66 @@
         <h4>Order</h4>
         <hr />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <table>
+            <tr class="row">
+                <th class="col-md-1">
+                </th>
+                <th class="col-md-5">
+                    Продукт
+                </th>
+                <th class="col-md-1">
+                    Цена
+                </th>
+                <th class="col-md-1">
+                    Брой
+                </th>
+                <th class="col-md-1">
+                    Общо
+                </th>
+                <th class="col-md-1">
+                   
+                </th>
+            </tr>
+
+            @foreach (var product in Model.Products)
+            {
+                <tr class="row">
+                    <td class="col-md-1">
+                        <img src="@product.ImageUrl" style="height: 70px; width: 70px;"/>
+                    </td>
+                    <td class="col-md-5">
+                        @product.Name
+                    </td>
+                    <td class="col-md-1">
+                        @product.Price лв.
+                    </td>
+                    <td class="col-md-1">
+                        @product.Quantity
+                    </td>
+                    <td class="col-md-1">
+                        @(product.Price * product.Quantity) лв.
+                    </td>
+                    <td class="col-md-1">
+                        <button class="btn btn-danger remove-order-item">
+                            Премахни
+                        </button>
+                    </td>
+                </tr>
+            }
+        </table>
+
         <div class="form-group">
-            <label asp-for="OrderDate" class="col-md-2 control-label"></label>
-            <div class="col-md-10">
-                <input asp-for="OrderDate" class="form-control" />
-                <span asp-validation-for="OrderDate" class="text-danger"></span>
-            </div>
-        </div>
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Create" class="btn btn-default" />
-            </div>
+            <dl class="dl-horizontal col-md-offset-9">
+                <dt>
+                    Обща сума: 
+                </dt>
+                <dd>
+                    @{
+                        var sum = Model.Products.Select(p => p.Quantity * p.Price).Sum();
+                    }
+                    @sum
+                </dd>
+            </dl>
         </div>
     </div>
 </form>

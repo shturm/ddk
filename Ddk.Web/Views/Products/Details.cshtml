@@ -55,11 +55,23 @@
             <dd>
                 @Html.DisplayFor(m => m.Price) лева (с ддс)
             </dd>
+            <dt>
+                <label>Количество: </label>
+            </dt>
+            <dd>
+                <input type="text" value="1" class="product-quantity" />
+            </dd>
+            <dd>
+                <input type="hidden" class="product-id" value="@Model.Id" />
+                <br/>
+                <button class="btn btn-success add-to-basket">
+                    <span class="glyphicon glyphicon-plus"></span>    
+                    Добави към количката
+                </button>
+            </dd>
         </dl>
     </div>
 </div>
-
-<button class="btn btn-danger add-to-basket">Добави към коичката</button>
 
 <br />
 <div class="row">
@@ -86,7 +98,7 @@
 
         var $companyName = $(".company-name");
         var $companyEik = $(".company-eik");
-        var $btnSubmitOrder = $(".submit-order").on("click", () => { 
+        var $btnSubmitOrder = $(".submit-order").on("click", () => {
             if ($companyName.val() == "" || $companyIngfoCheckbox.val() == "off") {
                 $companyName.val("NULL");
             }
@@ -96,8 +108,11 @@
             }
         });
 
-        $(".add-to-basket").on("click", () => { 
-
+        $(".add-to-basket").on("click", () => {
+            var $quantity = $(".product-quantity").val();
+            var $productId = $(".product-id").val();
+            var url = "/../Orders/AddToBasket";
+            $.post(url, { productId: $productId, quantity: $quantity });
         });
     </script>
 }
