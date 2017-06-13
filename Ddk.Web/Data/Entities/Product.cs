@@ -16,6 +16,7 @@ namespace Ddk.Data.Entities
         public ProductCategory ProductCategory { get; set; }
         public ICollection<CompatibilitySetting> CompatibilitySettings { get; set; }
         public decimal Price { get; set; }
+        public string ImageUrl { get; set; }
         public DateTime Created { get; set; }
         public DateTime Updated { get; set; }
     }

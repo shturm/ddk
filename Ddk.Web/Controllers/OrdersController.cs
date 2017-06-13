@@ -169,6 +169,21 @@ namespace Ddk.Web.Controllers
             return RedirectToAction("Index");
         }
 
+        public IActionResult AddToBasket(int? productId)
+        {
+            if (productId == null)
+            {
+                return NotFound();
+            }
+
+            //if (HttpContext.Session)
+            {
+
+            }
+
+            return View();
+        }
+
         private bool OrderExists(int id)
         {
             return _context.Order.Any(e => e.Id == id);

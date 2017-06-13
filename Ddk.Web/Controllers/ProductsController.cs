@@ -175,7 +175,8 @@ namespace Ddk.Web.Controllers
                     Id = p.Id,
                     Name = p.Name,
                     Description = p.Description,
-                    Price = p.Price
+                    Price = p.Price,
+                    ImageUrl = p.ImageUrl
                 })
                 .ToList();
 
@@ -220,6 +221,7 @@ namespace Ddk.Web.Controllers
                 Name = product.Name,
                 Description = product.Description,
                 Price = product.Price,
+                ImageUrl = product.ImageUrl,
                 Category = new CategoryVM()
                 {
                     Id = product.ProductCategory.Id,
