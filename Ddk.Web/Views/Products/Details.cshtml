@@ -16,7 +16,14 @@
 
 <div class="container-fluid">
     <div class="col-md-2 picture-container">
-        <img src="/images/no_pic.jpg" style="height: 225px; align-self: center;" />
+        @if (string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="~/imgs/products/no_pic.jpg" style="height: 175px; align-self: center;" />
+        }
+        else
+        {
+            <img src="@Model.ImageUrl" style="height: 175px; align-self: center;" />
+        }
     </div>
     <div class="col-md-8">
         <dl class="dl-horizontal">

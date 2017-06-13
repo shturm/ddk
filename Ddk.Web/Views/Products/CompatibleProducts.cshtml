@@ -18,7 +18,14 @@
                  style="height: 300px; text-align: center;">
                 <div style="align-content: center;">
                     <a asp-controller-for="Products" asp-action-for="Details" asp-route-id="@product.Id">
-                        <img src="https://www.autopower.bg/images/no_pic.jpg" style="height: 175px; align-self: center;" />
+                        @if (string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="~/imgs/products/no_pic.jpg" style="height: 175px; align-self: center;" />
+                        }
+                        else
+                        {
+                            <img src="@Model.ImageUrl" style="height: 175px; align-self: center;" />
+                        }
                     </a>
                 </div>
                 <br />
