@@ -1,18 +1,20 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Ddk.Data.Migrations
 {
-    public partial class AddAddressToUser : Migration
+    public partial class AddNamesToUser : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.AddColumn<string>(
-                name: "Address",
+                name: "FirstName",
                 table: "AspNetUsers",
                 nullable: true);
 
             migrationBuilder.AddColumn<string>(
-                name: "City",
+                name: "LastName",
                 table: "AspNetUsers",
                 nullable: true);
         }
@@ -20,11 +22,11 @@ namespace Ddk.Data.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropColumn(
-                name: "Address",
+                name: "FirstName",
                 table: "AspNetUsers");
 
             migrationBuilder.DropColumn(
-                name: "City",
+                name: "LastName",
                 table: "AspNetUsers");
         }
     }

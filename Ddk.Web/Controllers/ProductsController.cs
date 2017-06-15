@@ -202,19 +202,17 @@ namespace Ddk.Web.Controllers
                 .Include(p => p.ProductCategory)
                     .ThenInclude(cp => cp.Parent)
                 .SingleOrDefault(m => m.Id == productId);
-
             if (product == null)
             {
                 return NotFound();
             }
 
             var car = _context.Car.SingleOrDefault(c => c.Id == carId);
-
             if (car == null)
             {
                 return NotFound();
             }
-
+            
             var productVM = new ProductDetailsVM()
             {
                 Id = product.Id,

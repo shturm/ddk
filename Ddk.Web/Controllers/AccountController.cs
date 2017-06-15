@@ -1,21 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Threading.Tasks;
+﻿using Ddk.Data;
+using Ddk.Data.Entities;
+using Ddk.Models.AccountViewModels;
+using Ddk.Services;
+using Ddk.Web.Data;
+using Ddk.Web.Models.AccountViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Ddk.Models;
-using Ddk.Models.AccountViewModels;
-using Ddk.Services;
-using Ddk.Data.Entities;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Ddk.Data;
-using Ddk.Web.Data;
+using System.Linq;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace Ddk.Controllers
 {
@@ -49,6 +47,43 @@ namespace Ddk.Controllers
             _smsSender = smsSender;
             _logger = loggerFactory.CreateLogger<AccountController>();
             _context = context;
+        }
+
+
+        [HttpGet]
+        public IActionResult EditDeliveryData()
+        {
+            var dbUser = _userManager.FindByNameAsync(User.Identity.Name).Result;
+            return View(
+                new DeliveryDataViewModel()
+                {
+                    FirstName = dbUser.FirstName,
+                    LastName = dbUser.LastName,
+                    PhoneNumber = dbUser.PhoneNumber,
+                    Address = dbUser.Address,
+                    City = dbUser.City
+                });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult EditDeliveryData(DeliveryDataViewModel userVM)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = _context.Users.Single(u => u.UserName == User.Identity.Name);
+                user.Address = userVM.Address;
+                user.City = userVM.City;
+                user.PhoneNumber = userVM.PhoneNumber;
+                user.FirstName = userVM.FirstName;
+                user.LastName = userVM.LastName;
+
+                _context.Update(user);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Home");
+            }
+
+            return View(userVM);
         }
 
         //
@@ -129,7 +164,7 @@ namespace Ddk.Controllers
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = model.Email, Email = model.Email };
-                
+
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {

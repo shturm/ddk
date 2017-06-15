@@ -78,6 +78,7 @@
                     </dd>
                 </dl>
 
+                @* Delivery Data *@
                 <div class="col-md-3">
                     <div class="form-group">
                         <div class="col-md-12">
@@ -88,12 +89,12 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <input class="form-control" name="Names" placeholder="Име и фамилия" />
+                            <input class="form-control" asp-for="Names" placeholder="Име и фамилия" />
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <input class="form-control" name="PhoneNumber" placeholder="Телефон" />
+                            <input class="form-control" asp-for="PhoneNumber"  placeholder="Телефон" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -105,12 +106,12 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <input class="form-control" name="Address" placeholder="Адрес" />
+                            <input class="form-control" asp-for="Address" placeholder="Адрес" />
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <input class="form-control" name="City" placeholder="Град / Село" />
+                            <input class="form-control" asp-for="City" placeholder="Град / Село" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -149,11 +150,15 @@
                         <input type="submit" value="Поръчай" class="btn btn-success submit-order" />
                     </div>
                 </div>
+                @* END Delivery Data END *@
             </form>
 
-            @Html.Partial("LoginPartial")
+            @if (!User.Identity.IsAuthenticated)
+            {
+                @Html.Partial("LoginPartial")
 
-            @Html.Partial("RegisterPartial")
+                @Html.Partial("RegisterPartial")
+            }
         </div>
     </div>
 </div>

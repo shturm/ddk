@@ -10,9 +10,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">
-
-                </h4>
+                <h4 class="modal-title" id="myModalLabel"></h4>
             </div>
             <div class="modal-body">
                 Успешно добавихте @Model.Name към вашата количка
@@ -83,23 +81,27 @@
             </dd>
             <dd>
                 <input type="hidden" class="product-id" value="@Model.Id" />
-                <br/>
+                <br />
                 <button class="btn btn-success add-to-basket" data-toggle="modal" data-target="#myModal">
-                    <span class="glyphicon glyphicon-plus"></span>    
+                    <span class="glyphicon glyphicon-plus"></span>
                     Добави към количката
                 </button>
             </dd>
         </dl>
     </div>
-</div>
 
-<br />
-<div class="row">
-    @Html.Partial("MakeOrderPartial", Model)
+    <br />
+    <div class="row">
 
-    @Html.Partial("LoginPartial")
+        @await Component.InvokeAsync("OrderForm", new { productId = Model.Id })
 
-    @Html.Partial("RegisterPartial")
+        @if (!User.Identity.IsAuthenticated)
+        {
+            @Html.Partial("LoginPartial")
+
+            @Html.Partial("RegisterPartial")
+        }
+    </div>
 </div>
 
 <div class="row">

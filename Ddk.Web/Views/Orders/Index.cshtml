@@ -1,4 +1,4 @@
-@model IEnumerable<OrderVM>
+﻿@model IEnumerable<OrderVM>
 
 @{
     ViewData["Title"] = "Index";
@@ -12,18 +12,53 @@
 <table class="table">
     <thead>
         <tr>
+            @if (User.IsInRole("Admin"))
+            {
+                <th>
+                    Id
+                </th>
+            }
             <th>
-                @Html.DisplayNameFor(model => model.Created)
+                Дата на поръчка
             </th>
-            <th></th>
+            <th>
+                Статус
+            </th>
+            <th>
+                Имена
+            </th>
+            <th>
+                Адрес на доставка
+            </th>
+            <th>
+                Обща цена 
+            </th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model)
         {
             <tr>
+                @if (User.IsInRole("Admin"))
+                {
+                    <td>
+                        @item.Id
+                    </td>
+                }
                 <td>
-                    @Html.DisplayFor(modelItem => item.Created)
+                    @item.Created
+                </td>
+                <td>
+                    @item.Status
+                </td>
+                <td>
+                    @item.Names
+                </td>
+                <td>
+                    @(item.City  + " " + item.Address)
+                </td>
+                <td>
+                    @(item.OrderItems.Select(p => p.Quantity * p.Price).Sum()) лв.
                 </td>
                 <td>
                     <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |

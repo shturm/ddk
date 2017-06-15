@@ -32,6 +32,7 @@ namespace Ddk.Web.Controllers
                 orders = _context.Order
                     .Select(o => new OrderVM()
                     {
+                        Id = o.Id,
                         Status = o.Status,
                         Names = o.Names,
                         PhoneNumber = o.PhoneNumber,
@@ -46,7 +47,8 @@ namespace Ddk.Web.Controllers
                             ProductId = p.Id,
                             Description = p.Description,
                             Name = p.Name,
-                            Price = p.Price
+                            Price = p.Price,
+                            Quantity = p.Quantity
                         }).AsEnumerable()
                     }).ToList();
                 return View(orders);
@@ -97,6 +99,7 @@ namespace Ddk.Web.Controllers
         }
 
         // GET: Orders/Create
+        [HttpGet]
         public IActionResult Create()
         {
             if (HttpContext.Session.IsAvailable)
@@ -125,8 +128,18 @@ namespace Ddk.Web.Controllers
                     }
                 }
 
-                var orderVm = new OrderVM() { OrderItems = orderItems };
-                return View(orderVm);
+                var order = new OrderVM() { OrderItems = orderItems };
+                if (User.Identity.IsAuthenticated)
+                {
+                    var user = _context.Users.SingleOrDefault(u => u.UserName == User.Identity.Name);
+                    order.UserId = user.Id;
+                    order.Names = user.FirstName + " " + user.LastName;
+                    order.PhoneNumber = user.PhoneNumber;
+                    order.Address = user.Address;
+                    order.City = user.City;
+                }
+
+                return View(order);
             }
 
 
@@ -136,8 +149,9 @@ namespace Ddk.Web.Controllers
         // POST: Orders/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [AllowAnonymous]
         [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
         //[ValidateAntiForgeryToken]
         public IActionResult Create(OrderVM orderVM)
         {
@@ -159,15 +173,20 @@ namespace Ddk.Web.Controllers
                         ProductId = p.Id,
                         Description = p.Description,
                         Name = p.Name,
-                        Price = p.Price
+                        Price = p.Price,
+                        Quantity = p.Quantity
                     })
                     .ToList()
                 };
 
                 if (User.Identity.IsAuthenticated)
                 {
-                    var userId = _context.Users.SingleOrDefault(u => u.UserName == User.Identity.Name).Id;
-                    order.UserId = userId;
+                    var user = _context.Users.SingleOrDefault(u => u.UserName == User.Identity.Name);
+                    order.UserId = user.Id;
+                    order.Names = user.FirstName + " " + user.LastName;
+                    order.PhoneNumber = user.PhoneNumber;
+                    order.Address = user.Address;
+                    order.City = user.City;
                 }
 
                 _context.Order.Add(order);
