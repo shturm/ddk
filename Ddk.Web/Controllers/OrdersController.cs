@@ -53,8 +53,17 @@ namespace Ddk.Web.Controllers
             if (HttpContext.Session.IsAvailable)
             {
                 var objectsAsString = HttpContext.Session.GetString("orderItems");
+                if (string.IsNullOrEmpty(objectsAsString))
+                {
+                    return View("EmptyBasket");
+                }
 
                 var orderItems = JsonConvert.DeserializeObject<List<OrderItemVM>>(objectsAsString);
+                if (orderItems.Count() == 0)
+                {
+                    return View("EmptyBasket");
+                }
+
                 foreach (var orderItem in orderItems)
                 {
                     var product = _context.Product.SingleOrDefault(p => p.Id == orderItem.ProductId);
