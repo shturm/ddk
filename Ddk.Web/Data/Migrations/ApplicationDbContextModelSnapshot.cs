@@ -201,6 +201,8 @@ namespace Ddk.Data.Migrations
 
                     b.Property<DateTime>("Updated");
 
+                    b.Property<string>("UserId");
+
                     b.HasKey("Id");
 
                     b.ToTable("Order");

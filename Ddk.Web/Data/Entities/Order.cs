@@ -12,6 +12,8 @@ namespace Ddk.Web.Data.Entities
 
         public int Id { get; set; }
 
+        public string UserId { get; set; }
+
         public string Names { get; set; }
 
         public string PhoneNumber { get; set; }

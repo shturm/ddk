@@ -24,9 +24,58 @@ namespace Ddk.Web.Controllers
         }
 
         // GET: Orders
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
-            return View(await _context.Order.ToListAsync());
+            List<OrderVM> orders = null;
+            if (User.IsInRole("Admin"))
+            {
+                orders = _context.Order
+                    .Select(o => new OrderVM()
+                    {
+                        Status = o.Status,
+                        Names = o.Names,
+                        PhoneNumber = o.PhoneNumber,
+                        Address = o.Address,
+                        City = o.City,
+                        MoreInformation = o.MoreInformation,
+                        CompanyName = o.CompanyName,
+                        CompanyEIK = o.CompanyEIK,
+                        Created = o.Created,
+                        OrderItems = o.Items.Select(p => new OrderItemVM()
+                        {
+                            ProductId = p.Id,
+                            Description = p.Description,
+                            Name = p.Name,
+                            Price = p.Price
+                        }).AsEnumerable()
+                    }).ToList();
+                return View(orders);
+            }
+
+            var userId = _context.Users.SingleOrDefault(u => u.UserName == User.Identity.Name).Id;
+            orders = _context.Order
+                .Where(o => o.UserId == userId)
+                .Select(o => new OrderVM()
+                {
+                    Status = o.Status,
+                    Names = o.Names,
+                    PhoneNumber = o.PhoneNumber,
+                    Address = o.Address,
+                    City = o.City,
+                    MoreInformation = o.MoreInformation,
+                    CompanyName = o.CompanyName,
+                    CompanyEIK = o.CompanyEIK,
+                    Created = o.Created,
+                    OrderItems = o.Items.Select(p => new OrderItemVM()
+                    {
+                        ProductId = p.Id,
+                        Description = p.Description,
+                        Name = p.Name,
+                        Price = p.Price
+                    }).AsEnumerable()
+                })
+                .ToList();
+            return View(orders);
         }
 
         // GET: Orders/Details/5
@@ -114,6 +163,12 @@ namespace Ddk.Web.Controllers
                     })
                     .ToList()
                 };
+
+                if (User.Identity.IsAuthenticated)
+                {
+                    var userId = _context.Users.SingleOrDefault(u => u.UserName == User.Identity.Name).Id;
+                    order.UserId = userId;
+                }
 
                 _context.Order.Add(order);
                 _context.SaveChanges();

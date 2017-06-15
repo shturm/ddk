@@ -15,6 +15,7 @@ using Ddk.Services;
 using Ddk.Data.Entities;
 using Microsoft.AspNetCore.Identity;
 using Ddk.Web.Data;
+using Smetko.Kitchen.Data;
 
 namespace Ddk
 {
@@ -47,7 +48,14 @@ namespace Ddk
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
 
-            services.AddIdentity<ApplicationUser, IdentityRole>()
+            services.AddIdentity<ApplicationUser, IdentityRole>(options => 
+                {
+                    options.Password.RequireDigit = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequiredLength = 5;
+                })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddRoleManager<ApplicationRoleManager>()
                 .AddDefaultTokenProviders();
@@ -68,7 +76,8 @@ namespace Ddk
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory)
+        public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerFactory loggerFactory,
+            ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             loggerFactory.AddConsole(Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
@@ -102,6 +111,8 @@ namespace Ddk
                 //    name: "PickedCategoryChooseCar",
                 //    template: "category/{categoryId}"); // ProductsController.PickedProductCategoryChooseCar(...)
             });
+
+            DbInitializer.Initialize(context, userManager);
         }
     }
 }

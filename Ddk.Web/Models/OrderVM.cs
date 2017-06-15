@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using Ddk.Web.Data.Entities;
+using System;
+using System.Collections.Generic;
 
 namespace Ddk.Web.Models
 {
@@ -10,6 +12,8 @@ namespace Ddk.Web.Models
         }
 
         public int Id { get; set; }
+
+        public string UserId { get; set; }
 
         public string Names { get; set; }
 
@@ -27,6 +31,12 @@ namespace Ddk.Web.Models
 
         public string CompanyEIK { get; set; }
 
-        public ICollection<OrderItemVM> OrderItems { get; set; }
+        public DateTime Created { get; set; }
+
+        public DateTime Updated { get; set; }
+
+        public IEnumerable<OrderItemVM> OrderItems { get; set; }
+
+        public OrderStatus Status { get; set; }
     }
 }

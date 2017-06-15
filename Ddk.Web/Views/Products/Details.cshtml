@@ -4,6 +4,26 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">
+
+                </h4>
+            </div>
+            <div class="modal-body">
+                Успешно добавихте @Model.Name към вашата количка
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <h1>
     @Html.DisplayFor(m => m.Category.Name)
     за
@@ -64,7 +84,7 @@
             <dd>
                 <input type="hidden" class="product-id" value="@Model.Id" />
                 <br/>
-                <button class="btn btn-success add-to-basket" data-toggle="modal" data-target=".bs-example-modal-sm">
+                <button class="btn btn-success add-to-basket" data-toggle="modal" data-target="#myModal">
                     <span class="glyphicon glyphicon-plus"></span>    
                     Добави към количката
                 </button>
@@ -84,15 +104,6 @@
 
 <div class="row">
     @await Component.InvokeAsync("CategoriesList", new { carId = Model.Car.Id })
-</div>
-
-<!-- Small modal -->
-<div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel">
-    <div class="modal-dialog modal-sm" role="document">
-        <div class="modal-content">
-            Добавено
-        </div>
-    </div>
 </div>
 
 @section Scripts{
