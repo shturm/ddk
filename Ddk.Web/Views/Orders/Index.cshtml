@@ -4,10 +4,13 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
-
+<br />
 <p>
-    <a asp-action="Create">Create New</a>
+    <button class="btn btn-success">
+        <a asp-controller="Account" asp-action="EditDeliveryData">
+            Данни за доставка
+        </a>
+    </button>
 </p>
 <table class="table">
     <thead>
@@ -31,7 +34,7 @@
                 Адрес на доставка
             </th>
             <th>
-                Обща цена 
+                Обща цена
             </th>
         </tr>
     </thead>
@@ -55,7 +58,7 @@
                     @item.Names
                 </td>
                 <td>
-                    @(item.City  + " " + item.Address)
+                    @(item.City + " " + item.Address)
                 </td>
                 <td>
                     @(item.OrderItems.Select(p => p.Quantity * p.Price).Sum()) лв.

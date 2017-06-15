@@ -14,7 +14,7 @@
     <div class="col-md-8">
         <section>
             <form asp-controller="Account" asp-action="Login" asp-route-returnurl="@ViewData["ReturnUrl"]" method="post" class="form-horizontal">
-                <h4>Влезте с потребителско име и парола</h4>
+                <h4>Влезте с и-мейл и парола</h4>
                 <hr />
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group">
@@ -48,9 +48,6 @@
                 </div>
                 <p>
                     <a asp-action="Register" asp-route-returnurl="@ViewData["ReturnUrl"]">Регистрирай се</a>
-                </p>
-                <p>
-                    <a asp-action="ForgotPassword">Забравена парола?</a>
                 </p>
             </form>
         </section>

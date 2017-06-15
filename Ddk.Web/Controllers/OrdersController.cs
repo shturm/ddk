@@ -17,6 +17,7 @@ namespace Ddk.Web.Controllers
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private const string OrderItemsSessionDictionaryKey = "OrderItems";
 
         public OrdersController(ApplicationDbContext context)
         {
@@ -104,7 +105,7 @@ namespace Ddk.Web.Controllers
         {
             if (HttpContext.Session.IsAvailable)
             {
-                var objectsAsString = HttpContext.Session.GetString("orderItems");
+                var objectsAsString = HttpContext.Session.GetString(OrderItemsSessionDictionaryKey);
                 if (string.IsNullOrEmpty(objectsAsString))
                 {
                     return View("EmptyBasket");
@@ -142,7 +143,6 @@ namespace Ddk.Web.Controllers
                 return View(order);
             }
 
-
             return NotFound();
         }
 
@@ -152,7 +152,6 @@ namespace Ddk.Web.Controllers
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        //[ValidateAntiForgeryToken]
         public IActionResult Create(OrderVM orderVM)
         {
             if (ModelState.IsValid)
@@ -191,6 +190,10 @@ namespace Ddk.Web.Controllers
 
                 _context.Order.Add(order);
                 _context.SaveChanges();
+                
+                var result = JsonConvert.SerializeObject(new List<OrderItemVM>());
+                HttpContext.Session.SetString(OrderItemsSessionDictionaryKey, result);
+
                 return RedirectToAction("Index");
             }
 
@@ -283,12 +286,11 @@ namespace Ddk.Web.Controllers
             {
                 return;
             }
-
-            var key = "orderItems";
+            
             var orderItems = new List<OrderItemVM>();
-            if (HttpContext.Session.IsExists(key))
+            if (HttpContext.Session.IsExists(OrderItemsSessionDictionaryKey))
             {
-                var objectsAsString = HttpContext.Session.GetString(key);
+                var objectsAsString = HttpContext.Session.GetString(OrderItemsSessionDictionaryKey);
                 orderItems = JsonConvert.DeserializeObject<List<OrderItemVM>>(objectsAsString);
             }
 
@@ -304,16 +306,14 @@ namespace Ddk.Web.Controllers
 
             var result = JsonConvert.SerializeObject(orderItems);
 
-            HttpContext.Session.SetString(key, result);
+            HttpContext.Session.SetString(OrderItemsSessionDictionaryKey, result);
         }
 
         public void RemoveItemFromBasket(int productId)
         {
             if (HttpContext.Session.IsAvailable)
             {
-                var key = "orderItems";
-
-                var objectsAsString = HttpContext.Session.GetString(key);
+                var objectsAsString = HttpContext.Session.GetString(OrderItemsSessionDictionaryKey);
 
                 var orderItems = JsonConvert.DeserializeObject<List<OrderItemVM>>(objectsAsString);
 
@@ -325,7 +325,7 @@ namespace Ddk.Web.Controllers
 
                 var result = JsonConvert.SerializeObject(orderItems);
 
-                HttpContext.Session.SetString(key, result);
+                HttpContext.Session.SetString(OrderItemsSessionDictionaryKey, result);
             }
         }
 
