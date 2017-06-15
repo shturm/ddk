@@ -67,7 +67,7 @@ namespace Ddk.Web.Controllers
                     }
                 }
 
-                var orderVm = new OrderVM() { Products = orderItems };
+                var orderVm = new OrderVM() { OrderItems = orderItems };
                 return View(orderVm);
             }
 
@@ -96,7 +96,7 @@ namespace Ddk.Web.Controllers
                     CompanyName = orderVM.CompanyName,
                     CompanyEIK = orderVM.CompanyEIK,
                     Created = DateTime.Now,
-                    Items = orderVM.Products.Select(p => new OrderItem()
+                    Items = orderVM.OrderItems.Select(p => new OrderItem()
                     {
                         ProductId = p.Id,
                         Description = p.Description,
@@ -202,19 +202,48 @@ namespace Ddk.Web.Controllers
             }
 
             var key = "orderItems";
-            var objectsCollection = new List<OrderItemVM>();
+            var orderItems = new List<OrderItemVM>();
             if (HttpContext.Session.IsExists(key))
             {
                 var objectsAsString = HttpContext.Session.GetString(key);
-                objectsCollection = JsonConvert.DeserializeObject<List<OrderItemVM>>(objectsAsString);
+                orderItems = JsonConvert.DeserializeObject<List<OrderItemVM>>(objectsAsString);
             }
 
+            if (orderItems.Any(x => x.ProductId == productId))
+            {
+                var orderItem = orderItems.SingleOrDefault(or => or.ProductId == productId);
+                orderItem.Quantity += quantity;
+            }
+            else
+            {
+                orderItems.Add(new OrderItemVM() { ProductId = productId, Quantity = quantity });
+            }
 
-            objectsCollection.Add(new OrderItemVM() { ProductId = productId, Quantity = quantity });
-
-            var result = JsonConvert.SerializeObject(objectsCollection);
+            var result = JsonConvert.SerializeObject(orderItems);
 
             HttpContext.Session.SetString(key, result);
+        }
+
+        public void RemoveItemFromBasket(int productId)
+        {
+            if (HttpContext.Session.IsAvailable)
+            {
+                var key = "orderItems";
+
+                var objectsAsString = HttpContext.Session.GetString(key);
+
+                var orderItems = JsonConvert.DeserializeObject<List<OrderItemVM>>(objectsAsString);
+
+                var itemToRemove = orderItems.SingleOrDefault(i => i.ProductId == productId);
+                if (itemToRemove != null)
+                {
+                    orderItems.Remove(itemToRemove);
+                }
+
+                var result = JsonConvert.SerializeObject(orderItems);
+
+                HttpContext.Session.SetString(key, result);
+            }
         }
 
         private bool OrderExists(int id)

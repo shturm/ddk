@@ -42,3 +42,9 @@
         }
     </div>
 </div>
+
+
+<div class="row">
+    @await Component.InvokeAsync("CategoriesList", new { carId = Model.Car.Id })
+</div>
+

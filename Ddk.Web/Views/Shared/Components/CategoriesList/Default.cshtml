@@ -1,0 +1,24 @@
+@model List<ProductCategory>
+
+<div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+    @foreach (var rootCat in Model)
+    {
+        <div class="col-lg-2 col-md-2 col-sm-6 col-xs-6">
+            <h2><a href="#">@rootCat.Name</a></h2>
+            <ol>
+                @foreach (var subCat in rootCat.Children.OrderByDescending(sc => sc.Products.Count))
+            {
+                var url = "/Products/PickedProductCategoryChooseCar/?categoryId=" + subCat.Id;
+                if (ViewData["carId"] != null)
+                {
+                    url = "/Products/PickedCarChooseProductCategory/";
+                    url += "?carId=" + ViewData["carId"];
+                    url += "&categoryId=" + subCat.Id;
+                }
+
+                <li><a href="@url">@subCat.Name (@subCat.Products?.Count)</a></li>
+                }
+            </ol>
+        </div>
+    }
+</div>

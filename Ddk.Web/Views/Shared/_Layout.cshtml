@@ -15,6 +15,9 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+
+    @* Select2 Css *@
+    <link rel="stylesheet" type="text/css" href="~/vendors/select2/dist/css/select2.min.css">
 </head>
 <body>
     <nav class="navbar navbar-inverse navbar-fixed-top">
@@ -33,7 +36,10 @@
                     <li><a asp-area="" asp-controller="Home" asp-action="Index">Начало</a></li>
                     @*<li><a asp-area="" asp-controller="Home" asp-action="About">За Нас</a></li>*@
                     <li><a asp-area="" asp-controller="Home" asp-action="Contact">Контакт - 088 588 1559</a></li>
+                    <li><a asp-area="" asp-controller="Orders" asp-action="Create">Количка</a></li>
                 </ul>
+
+
                 @await Html.PartialAsync("_LoginPartial")
             </div>
         </div>

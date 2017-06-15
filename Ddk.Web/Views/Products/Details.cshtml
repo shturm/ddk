@@ -82,6 +82,10 @@
     @Html.Partial("RegisterPartial")
 </div>
 
+<div class="row">
+    @await Component.InvokeAsync("CategoriesList", new { carId = Model.Car.Id })
+</div>
+
 @section Scripts{
     <script>
         var $companyInfo = $(".company-info");

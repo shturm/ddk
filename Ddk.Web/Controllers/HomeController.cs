@@ -29,7 +29,7 @@ namespace Ddk.Controllers
             IEnumerable<ProductCategory> categories = _db.ProductCategory
                 .Where(c => c.ParentId == null)
                 .Include("Children.Products")
-                .OrderByDescending(c=>c.Products.Count)
+                .OrderByDescending(c => c.Products.Count)
                 .ToList();
             IEnumerable<string> carMakes = _db.Car.OrderBy(c => c.Make).Select(c => c.Make).Distinct().ToList();
             var vm = new HomeVM()

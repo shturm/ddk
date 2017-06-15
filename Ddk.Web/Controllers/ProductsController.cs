@@ -376,7 +376,7 @@ namespace Ddk.Web.Controllers
         private IActionResult ChooseCarMake(int? categoryId)
         {
             var makes = _context.Car.OrderBy(c => c.Make).Select(x => x.Make).Distinct().ToList();
-            
+
             var index = 0;
             var matrix = new List<List<string>>();
             foreach (var make in makes)
@@ -397,7 +397,7 @@ namespace Ddk.Web.Controllers
             else
             {
                 ViewData["categoryId"] = categoryId;
-                ViewData["categoryName"] = _context.ProductCategory.Single(c=>c.Id == categoryId.Value).Name;
+                ViewData["categoryName"] = _context.ProductCategory.Single(c => c.Id == categoryId.Value).Name;
 
                 return View("PickedProductCategoryChooseMake", matrix);
             }
@@ -449,7 +449,7 @@ namespace Ddk.Web.Controllers
             else
             {
                 ViewData["categoryId"] = categoryId;
-                ViewData["categoryName"] = _context.ProductCategory.Single(c=>c.Id == categoryId).Name;
+                ViewData["categoryName"] = _context.ProductCategory.Single(c => c.Id == categoryId).Name;
 
                 return View("PickedProductCategoryChooseModelVariantBody", matrix);
             }
@@ -493,6 +493,16 @@ namespace Ddk.Web.Controllers
 
                 return View("PickedProductCategoryChooseEngineType", engineOptions);
             }
+        }
+
+        [HttpGet]
+        [AllowAnonymous]
+        public JsonResult AvaiableProducts()
+        {
+            var products = _context.Product
+                .Select(p => new { id = p.Id, text = p.SKU + " " + p.Name })
+                .ToArray();
+            return Json(products);
         }
     }
 }

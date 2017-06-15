@@ -1,0 +1,380 @@
+﻿@model OrderVM
+
+<h2>Order</h2>
+
+<div class="row">
+    <div class="col-md-12">
+        <form asp-action="Create">
+            <div class="form-horizontal">
+                <hr />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="container order-items-container">
+
+                    <div class="row">
+                        <div class="col-md-1">
+                        </div>
+                        <div class="col-md-5">
+                            Продукт
+                        </div>
+                        <div class="col-md-1">
+                            Цена
+                        </div>
+                        <div class="col-md-1">
+                            Брой
+                        </div>
+                        <div class="col-md-1">
+                            Общо
+                        </div>
+                        <div class="col-md-1">
+
+                        </div>
+                    </div>
+
+                    @foreach (var orderItem in Model.OrderItems)
+                    {
+                        <div class="row order-item-row">
+
+                            <input type="hidden" class="product-id" value="" />
+
+                            <div class="col-md-1">
+                                <img src="@orderItem.ImageUrl" style="height: 70px; width: 70px;" />
+                            </div>
+
+                            <div class="col-md-5">
+                                <select name="OrderItems[0].Name" class="product-name"></select>
+                            </div>
+
+                            <div class="col-md-1">
+                                @orderItem.Price лв.
+                            </div>
+
+                            <div class="col-md-1">
+                                <input asp-for="@orderItem.Quantity" class="form-control" />
+                            </div>
+
+                            <div class="col-md-1">
+                                @(orderItem.Price * orderItem.Quantity) лв.
+                            </div>
+
+                            <div class="col-md-1">
+                                <input type="hidden" value="@orderItem.ProductId" class="product-id" />
+                                <button type="button" class="btn btn-danger remove-order-item">
+                                    Премахни
+                                </button>
+                            </div>
+
+                        </div>
+                    }
+                </div>
+
+                <dl class="dl-horizontal col-md-offset-9">
+                    <dt>
+                        Обща сума:
+                    </dt>
+                    <dd>
+                        @(Model.OrderItems.Select(p => p.Quantity * p.Price).Sum()) лв.
+                    </dd>
+                </dl>
+
+                <div class="col-md-12">
+                    <button type="button" class="btn btn-success btn-new-order-item col-md-offset-5">
+                        <span class="glyphicon glyphicon-plus"></span>
+                        Нов продукт
+                    </button>
+                </div>
+                <br />
+
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>
+                                Данни за доставка
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input class="form-control" name="Names" placeholder="Име и фамилия" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input class="form-control" name="PhoneNumber" placeholder="Телефон" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>
+                                Адрес за доставка
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input class="form-control" name="Address" placeholder="Адрес" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input class="form-control" name="City" placeholder="Град / Село" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>
+                                Допълнителна информация
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <input class="form-control" name="MoreInformation" placeholder="Полето не е задължително" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label>
+                                Фактура
+                            </label>
+                            <input type="checkbox" class="checkbox-inline checkbox-company-info" value="off" />
+                        </div>
+                    </div>
+                    <div class="company-info" style="display: none;">
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <input class="form-control company-name" name="CompanyName" placeholder="Име на фирма" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <input class="form-control company-eik" name="CompanyEIK" placeholder="ЕИК Булстат" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <input type="submit" value="Поръчай" class="btn btn-success submit-order" />
+                    </div>
+                </div>
+        </form>
+
+        @*LOGIN FORM*@
+        <form asp-controller="Account" asp-action="Login" method="post" class="form-horizontal">
+            @Html.AntiForgeryToken()
+            <fieldset class="col-md-3">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>
+                            Съществуващи потребители
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <input name="Email" placeholder="И-мейл" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <input name="Password" placeholder="Парола" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-default col-md-3">Влез</button>
+                        <a asp-controller="Account" asp-action="ForgotPassword" class="col-md-7 col-md-offset-1">Забравена парола?</a>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+
+        @*REGISTER FORM*@
+        <form asp-controller="Account" asp-action="Register" method="post" class="form-horizontal">
+            @Html.AntiForgeryToken()
+            <fieldset class="col-md-3">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <label>
+                            Поръчка с регистрация
+                        </label>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <input name="UserName" placeholder="Потербител" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <input name="Email" placeholder="И-мейл" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <input name="Password" placeholder="Парола" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <input name="ConfirmPassword" placeholder="Потвърди парола" class="form-control" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <button type="submit" class="btn btn-default">Регистрация</button>
+                    </div>
+                </div>
+            </fieldset>
+        </form>
+    </div>
+</div>
+
+@* add new orderItem *@
+<div class="row add-new-order-item" style="display: none;">
+
+    <input type="hidden" class="product-id" value="" />
+    <input type="hidden" class="product-sku" value="" />
+
+    <div class="col-md-1">
+    </div>
+
+    <div class="col-md-5">
+        <select name="OrderItems[0].Name" class="product-name"></select>
+    </div>
+
+    <div class="col-md-1">
+    </div>
+
+    <div class="col-md-1">
+        <input name="OrderItems[0].Quantity" value="1" class="form-control" />
+    </div>
+
+    <div class="col-md-1">
+    </div>
+
+    <div class="col-md-1">
+        <button type="button" class="btn btn-danger remove-order-item">
+            Премахни
+        </button>
+
+    </div>
+
+    <br />
+    <br />
+    <br />
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts{
+    <!-- Select2 -->
+    <script src="~/vendors/select2/dist/js/select2.min.js"></script>
+
+    <script>
+
+        document.AVAIABLE_PRODUCTS = [];
+        function getAvaiableProductNames() {
+            let promise = new Promise((resolve, reject) => {
+                if (document.AVAIABLE_PRODUCTS && document.AVAIABLE_PRODUCTS.length > 0) {
+                    resolve(document.AVAIABLE_PRODUCTS);
+                }
+
+                let url = "/../Products/AvaiableProducts";
+                $.get(url, function (data, status) {
+                    document.AVAIABLE_PRODUCTS = data;
+                    resolve(document.AVAIABLE_PRODUCTS);
+                });
+            });
+
+            return promise;
+        }
+
+        getAvaiableProductNames().then((data) => {
+            let products = $(".product-name");
+            for (let product of products) {
+                initiateSelect2($(product), data, 'Име на продукт');
+            }
+
+            let productIds = $(".product-id");
+            for (let id of productIds) {
+                $(id).select2({ data: data });
+            }
+        });
+
+        function initiateSelect2(jqElement, data, placeholder = '') {
+            jqElement.select2({
+                data: data,
+                placeholder: placeholder,
+
+                // new item stuff
+                tags: true,
+                createTag: function (params) {
+                    return {
+                        id: params.term,
+                        text: params.term,
+                        newOption: true
+                    }
+                },
+                templateResult: function (data) {
+                    let $result = $("<span></span>");
+
+                    $result.text(data.text);
+
+                    if (data.newOption) {
+                        $result.append(" <em>(създай)</em>");
+                    }
+
+                    return $result;
+                }
+            });
+        }
+
+        $(".product-name").on("change", (event) => {
+            var id = $(event.target).select2('data')[0].id;
+            let $productIdHidden = $(event.target).parent().children(".product-id");
+            $productIdHidden.val(id);
+        });
+
+        $(".remove-order-item").on("click", (event) => {
+            let $productIdHidden = $(event.target).parent().children(".product-id").val();
+            $(event.target).parent().parent().html("");
+            $.post("RemoveItemFromBasket", { productId: $productIdHidden });
+        });
+
+        $(".btn-new-order-item").on("click", () => {
+            let newOrderItem = $(".add-new-order-item").clone().attr("style", "").attr("class", "row");
+
+            let $product = newOrderItem.children(".product-name").first();
+
+            initiateSelect2($($product), document.AVAIABLE_PRODUCTS, 'Име на продукт');
+
+            $(".order-items-container").append(newOrderItem);
+        });
+
+        var $companyInfo = $(".company-info");
+        var $companyIngfoCheckbox = $(".checkbox-company-info");
+        $companyIngfoCheckbox.on("change", () => {
+            if ($companyIngfoCheckbox.val() == "off") {
+                $companyIngfoCheckbox.val("on");
+                $companyInfo.show();
+            } else {
+                $companyIngfoCheckbox.val("off");
+                $companyInfo.hide();
+            }
+        });
+
+        var $companyName = $(".company-name");
+        var $companyEik = $(".company-eik");
+        var $btnSubmitOrder = $(".submit-order").on("click", () => {
+            if ($companyName.val() == "" || $companyIngfoCheckbox.val() == "off") {
+                $companyName.val("NULL");
+            }
+
+            if ($companyEik.val() == "" || $companyIngfoCheckbox.val() == "off") {
+                $companyEik.val("NULL");
+            }
+        });
+    </script>
+}
