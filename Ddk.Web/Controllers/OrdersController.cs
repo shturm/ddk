@@ -138,6 +138,8 @@ namespace Ddk.Web.Controllers
                     order.PhoneNumber = user.PhoneNumber;
                     order.Address = user.Address;
                     order.City = user.City;
+                    order.CompanyName = user.CompanyName;
+                    order.CompanyEIK = user.CompanyEIK;
                 }
 
                 return View(order);
@@ -186,6 +188,8 @@ namespace Ddk.Web.Controllers
                     order.PhoneNumber = user.PhoneNumber;
                     order.Address = user.Address;
                     order.City = user.City;
+                    order.CompanyName = user.CompanyName;
+                    order.CompanyEIK = user.CompanyEIK;
                 }
 
                 _context.Order.Add(order);

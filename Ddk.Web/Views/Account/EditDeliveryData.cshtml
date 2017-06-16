@@ -58,6 +58,24 @@
             </div>
         </div>
         <div class="form-group">
+            <label name="CompanyName" class="col-md-2 control-label">
+                Име на фирма
+            </label>
+            <div class="col-md-10">
+                <input asp-for="CompanyName" class="form-control" />
+                <span asp-validation-for="CompanyName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label name="CompanyEIK" class="col-md-2 control-label">
+                ЕИК Бустад 
+            </label>
+            <div class="col-md-10">
+                <input asp-for="CompanyEIK" class="form-control" />
+                <span asp-validation-for="CompanyEIK" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Запази" class="btn btn-default" />
             </div>

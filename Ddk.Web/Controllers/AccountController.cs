@@ -61,7 +61,9 @@ namespace Ddk.Controllers
                     LastName = dbUser.LastName,
                     PhoneNumber = dbUser.PhoneNumber,
                     Address = dbUser.Address,
-                    City = dbUser.City
+                    City = dbUser.City,
+                    CompanyName = dbUser.CompanyName,
+                    CompanyEIK = dbUser.CompanyEIK
                 });
         }
 
@@ -72,11 +74,13 @@ namespace Ddk.Controllers
             if (ModelState.IsValid)
             {
                 var user = _context.Users.Single(u => u.UserName == User.Identity.Name);
-                user.Address = userVM.Address;
-                user.City = userVM.City;
-                user.PhoneNumber = userVM.PhoneNumber;
                 user.FirstName = userVM.FirstName;
                 user.LastName = userVM.LastName;
+                user.PhoneNumber = userVM.PhoneNumber;
+                user.Address = userVM.Address;
+                user.City = userVM.City;
+                user.CompanyName = userVM.CompanyName;
+                user.CompanyEIK = userVM.CompanyEIK;
 
                 _context.Update(user);
                 _context.SaveChanges();

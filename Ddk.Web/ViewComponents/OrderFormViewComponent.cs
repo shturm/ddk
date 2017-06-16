@@ -28,7 +28,9 @@ namespace Ddk.Web.ViewComponents
                     LastName = dbUser.LastName,
                     PhoneNumber = dbUser.PhoneNumber,
                     Address = dbUser.Address,
-                    City = dbUser.City
+                    City = dbUser.City,
+                    CompanyName = dbUser.CompanyName,
+                    CompanyEIK = dbUser.CompanyEIK
                 };
             }
 

@@ -112,7 +112,7 @@ namespace Ddk
                 //    template: "category/{categoryId}"); // ProductsController.PickedProductCategoryChooseCar(...)
             });
 
-            DbInitializer.Initialize(context, userManager);
+            //DbInitializer.Initialize(context, userManager);
         }
     }
 }

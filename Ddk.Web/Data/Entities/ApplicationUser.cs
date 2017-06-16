@@ -12,5 +12,9 @@ namespace Ddk.Data.Entities
         public string Address { get; set; }
 
         public string City { get; set; }
+
+        public string CompanyEIK { get; set; }
+
+        public string CompanyName { get; set; }
     }
 }
