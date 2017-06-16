@@ -60,6 +60,7 @@ namespace Ddk.Web.Controllers
                 .Where(o => o.UserId == userId)
                 .Select(o => new OrderVM()
                 {
+                    Id = o.Id,
                     Status = o.Status,
                     Names = o.Names,
                     PhoneNumber = o.PhoneNumber,
@@ -71,10 +72,11 @@ namespace Ddk.Web.Controllers
                     Created = o.Created,
                     OrderItems = o.Items.Select(p => new OrderItemVM()
                     {
-                        ProductId = p.Id,
+                        ProductId = p.ProductId,
                         Description = p.Description,
                         Name = p.Name,
-                        Price = p.Price
+                        Price = p.Price,
+                        Quantity = p.Quantity
                     }).AsEnumerable()
                 })
                 .ToList();
@@ -96,7 +98,29 @@ namespace Ddk.Web.Controllers
                 return NotFound();
             }
 
-            return View(order);
+            var orderVm = new OrderVM()
+            {
+                Id = order.Id,
+                Status = order.Status,
+                Names = order.Names,
+                PhoneNumber = order.PhoneNumber,
+                Address = order.Address,
+                City = order.City,
+                MoreInformation = order.MoreInformation,
+                CompanyName = order.CompanyName,
+                CompanyEIK = order.CompanyEIK,
+                Created = order.Created,
+                OrderItems = order.Items.Select(p => new OrderItemVM()
+                {
+                    ProductId = p.Id,
+                    Description = p.Description,
+                    Name = p.Name,
+                    Price = p.Price,
+                    Quantity = p.Quantity
+                }).AsEnumerable()
+            };
+
+            return View(orderVm);
         }
 
         // GET: Orders/Create
@@ -184,12 +208,6 @@ namespace Ddk.Web.Controllers
                 {
                     var user = _context.Users.SingleOrDefault(u => u.UserName == User.Identity.Name);
                     order.UserId = user.Id;
-                    order.Names = user.FirstName + " " + user.LastName;
-                    order.PhoneNumber = user.PhoneNumber;
-                    order.Address = user.Address;
-                    order.City = user.City;
-                    order.CompanyName = user.CompanyName;
-                    order.CompanyEIK = user.CompanyEIK;
                 }
 
                 _context.Order.Add(order);

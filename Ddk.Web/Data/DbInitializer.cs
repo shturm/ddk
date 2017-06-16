@@ -13,10 +13,10 @@ namespace Smetko.Kitchen.Data
         {
             context.Database.EnsureCreated();
 
-            if (context.Users.Any())
-            {
-                return;
-            }
+            //if (context.Users.Any())
+            //{
+            //    return;
+            //}
 
             var roles = new string[] { "User", "Admin" };
             foreach (var role in roles)

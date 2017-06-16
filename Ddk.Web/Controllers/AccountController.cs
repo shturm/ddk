@@ -196,9 +196,8 @@ namespace Ddk.Controllers
         }
 
         //
-        // POST: /Account/Logout
-        [HttpPost]
-        [ValidateAntiForgeryToken]
+        // GET: /Account/Logout
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();

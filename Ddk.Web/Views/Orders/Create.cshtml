@@ -32,41 +32,48 @@
                         </div>
                     </div>
 
+                    @{
+                        int index = -1;
+                    }
                     @foreach (var orderItem in Model.OrderItems)
-                {
-                    <div class="row order-item-row">
+                    {
+                        index++;
+                        <div class="row order-item-row">
 
-                        <input type="hidden" class="product-id" value="" />
+                            <input type="hidden" class="product-id" name="OrderItems[@index].ProductId" value="@orderItem.ProductId" />
+                            <input type="hidden" name="OrderItems[@index].Description" value="@orderItem.Description" />
+                            <input type="hidden" name="OrderItems[@index].ImageUrl" value="@orderItem.ImageUrl" />
 
-                        <div class="col-md-1">
-                            <img src="@orderItem.ImageUrl" style="height: 70px; width: 70px;" />
+                            <div class="col-md-1">
+                                <img src="@orderItem.ImageUrl" style="height: 70px; width: 70px;" />
+                            </div>
+
+                            <div class="col-md-5">
+                                @orderItem.Name
+                                <input type="hidden" name="OrderItems[@index].Name" value="@orderItem.Name" />
+                            </div>
+
+                            <div class="col-md-1">
+                                @orderItem.Price лв.
+                                <input type="hidden" name="OrderItems[@index].Price" value="@orderItem.Price" />
+                            </div>
+
+                            <div class="col-md-1">
+                                <input name="OrderItems[@index].Quantity" value="@orderItem.Quantity" class="form-control" />
+                            </div>
+
+                            <div class="col-md-1">
+                                @(orderItem.Price * orderItem.Quantity) лв.
+                            </div>
+
+                            <div class="col-md-1">
+                                <button type="button" class="btn btn-danger remove-order-item">
+                                    Премахни
+                                </button>
+                            </div>
+
                         </div>
-
-                        <div class="col-md-5">
-                            @orderItem.Name
-                        </div>
-
-                        <div class="col-md-1">
-                            @orderItem.Price лв.
-                        </div>
-
-                        <div class="col-md-1">
-                            <input asp-for="@orderItem.Quantity" class="form-control" />
-                        </div>
-
-                        <div class="col-md-1">
-                            @(orderItem.Price * orderItem.Quantity) лв.
-                        </div>
-
-                        <div class="col-md-1">
-                            <input type="hidden" value="@orderItem.ProductId" class="product-id" />
-                            <button type="button" class="btn btn-danger remove-order-item">
-                                Премахни
-                            </button>
-                        </div>
-
-                    </div>
-                }
+                    }
                 </div>
 
                 <dl class="dl-horizontal col-md-offset-7">
@@ -94,7 +101,7 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <input class="form-control" asp-for="PhoneNumber"  placeholder="Телефон" />
+                            <input class="form-control" asp-for="PhoneNumber" placeholder="Телефон" />
                         </div>
                     </div>
                     <div class="form-group">

@@ -1,4 +1,4 @@
-@model Ddk.Web.Data.Entities.Order
+@model OrderVM
 
 @{
     ViewData["Title"] = "Details";
@@ -7,17 +7,99 @@
 <h2>Details</h2>
 
 <div>
-    <h4>Order</h4>
+    <h4>OrderVM</h4>
     <hr />
     <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Names)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Names)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PhoneNumber)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PhoneNumber)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Address)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Address)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.City)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.City)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MoreInformation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MoreInformation)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.AdminNote)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.AdminNote)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyName)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyName)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CompanyEIK)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CompanyEIK)
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Created)
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Created)
         </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Status)
+        </dd>
     </dl>
 </div>
+
+<table>
+    <thead>
+    </thead>
+    <tbody>
+        @foreach (var orderItem in Model.OrderItems)
+        {
+            <tr>
+                <td>
+                    @orderItem.Id
+                </td>
+                <td>
+                    @orderItem.Name
+                </td>
+                <td>
+                    @orderItem.Description
+                </td>
+                <td>
+                    @orderItem.Quantity
+                </td>
+                <td>
+                    @orderItem.Price
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

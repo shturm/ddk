@@ -2,6 +2,7 @@
 using Ddk.Web.Data.Entities;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using Ddk.Web.Models;
 
 namespace Ddk.Data
 {
@@ -27,5 +28,7 @@ namespace Ddk.Data
         }
 
         public DbSet<Ddk.Data.Entities.ApplicationUser> ApplicationUser { get; set; }
+
+        public DbSet<Ddk.Web.Models.OrderVM> OrderVM { get; set; }
     }
 }
