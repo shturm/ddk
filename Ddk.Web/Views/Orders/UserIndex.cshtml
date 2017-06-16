@@ -1,0 +1,60 @@
+﻿@model IEnumerable<OrderVM>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<br />
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Номер на поръчката
+            </th>
+            <th>
+                Дата на поръчка
+            </th>
+            <th>
+                Статус
+            </th>
+            <th>
+                Имена
+            </th>
+            <th>
+                Адрес на доставка
+            </th>
+            <th>
+                Обща цена
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr class="" onclick="window.document.location='/../Orders/Details/@item.Id';" onmouseover="" style="cursor: pointer;">
+                <td>
+                    @item.Id
+                </td>
+                <td>
+                    @item.Created
+                </td>
+                <td>
+                    @item.Status
+                </td>
+                <td>
+                    @item.Names
+                </td>
+                <td>
+                    @(item.City + " " + item.Address)
+                </td>
+                <td>
+                    @(item.OrderItems.Select(p => p.Quantity * p.Price).Sum()) лв.
+                </td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

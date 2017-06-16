@@ -1,80 +1,114 @@
-@model OrderVM
+﻿@model OrderVM
 
 @{
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2>
+    Преглед поръчка
+</h2>
 
 <div>
-    <h4>OrderVM</h4>
     <hr />
-    <dl class="dl-horizontal">
+    <dl class="dl-horizontal">        
         <dt>
-            @Html.DisplayNameFor(model => model.Names)
+            <label>
+                Поръчка номер
+            </label>
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Names)
+            @Html.DisplayFor(model => model.Id)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.PhoneNumber)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PhoneNumber)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.City)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.City)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.MoreInformation)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.MoreInformation)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AdminNote)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AdminNote)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CompanyName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CompanyName)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.CompanyEIK)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.CompanyEIK)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Created)
+            <label>
+                Регистрирана на
+            </label>
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Created)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Status)
+            <label>
+                Обща сума
+            </label>
+        </dt>
+        <dd>
+            @(Model.OrderItems.Select(p => p.Quantity * p.Price).Sum()) лв.
+        </dd>
+        <dt>
+            <label>
+                Статус
+            </label>
         </dt>
         <dd>
             @Html.DisplayFor(model => model.Status)
         </dd>
     </dl>
+    <div>
+        <label>
+            Доставка
+        </label>
+        <dl class="dl-horizontal">
+            <dt>
+                Имена
+            </dt>
+            <dd>
+                @Model.Names
+            </dd>
+            <dt>
+                Телефон
+            </dt>
+            <dd>
+                @Model.PhoneNumber
+            </dd>
+            <dt>
+                Адрес
+            </dt>
+            <dd>
+                @Model.Address @Model.City
+            </dd>
+        </dl>
+    </div>
+    <div>
+        <label>
+            Фактура
+        </label>
+        <dl class="dl-horizontal">
+            <dt>
+                Фирма
+            </dt>
+            <dd>
+                @Model.CompanyName
+            </dd>
+            <dt>
+                ЕИК Бустат
+            </dt>
+            <dd>
+                @Model.CompanyEIK
+            </dd>
+        </dl>
+    </div>
 </div>
 
 <table>
     <thead>
+        <tr>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+            <th>
+
+            </th>
+        </tr>
     </thead>
     <tbody>
         @foreach (var orderItem in Model.OrderItems)
@@ -101,6 +135,5 @@
 </table>
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Назад към списъка</a>
 </div>

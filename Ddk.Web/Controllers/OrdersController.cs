@@ -25,12 +25,22 @@ namespace Ddk.Web.Controllers
         }
 
         // GET: Orders
+        [HttpGet]
         public IActionResult Index()
         {
-            List<OrderVM> orders = null;
             if (User.IsInRole("Admin"))
             {
-                orders = _context.Order
+                return RedirectToAction("AdminIndex", "Orders");
+            }
+            else
+            {
+                return RedirectToAction("UserIndex", "Orders");
+            }
+        }
+
+        public IActionResult AdminIndex()
+        {
+            var orders = _context.Order
                     .Select(o => new OrderVM()
                     {
                         Id = o.Id,
@@ -52,34 +62,36 @@ namespace Ddk.Web.Controllers
                             Quantity = p.Quantity
                         }).AsEnumerable()
                     }).ToList();
-                return View(orders);
-            }
+            return View(orders);
+        }
 
+        public IActionResult UserIndex()
+        {
             var userId = _context.Users.SingleOrDefault(u => u.UserName == User.Identity.Name).Id;
-            orders = _context.Order
-                .Where(o => o.UserId == userId)
-                .Select(o => new OrderVM()
-                {
-                    Id = o.Id,
-                    Status = o.Status,
-                    Names = o.Names,
-                    PhoneNumber = o.PhoneNumber,
-                    Address = o.Address,
-                    City = o.City,
-                    MoreInformation = o.MoreInformation,
-                    CompanyName = o.CompanyName,
-                    CompanyEIK = o.CompanyEIK,
-                    Created = o.Created,
-                    OrderItems = o.Items.Select(p => new OrderItemVM()
-                    {
-                        ProductId = p.ProductId,
-                        Description = p.Description,
-                        Name = p.Name,
-                        Price = p.Price,
-                        Quantity = p.Quantity
-                    }).AsEnumerable()
-                })
-                .ToList();
+            var orders = _context.Order
+                  .Where(o => o.UserId == userId)
+                  .Select(o => new OrderVM()
+                  {
+                      Id = o.Id,
+                      Status = o.Status,
+                      Names = o.Names,
+                      PhoneNumber = o.PhoneNumber,
+                      Address = o.Address,
+                      City = o.City,
+                      MoreInformation = o.MoreInformation,
+                      CompanyName = o.CompanyName,
+                      CompanyEIK = o.CompanyEIK,
+                      Created = o.Created,
+                      OrderItems = o.Items.Select(p => new OrderItemVM()
+                      {
+                          ProductId = p.ProductId,
+                          Description = p.Description,
+                          Name = p.Name,
+                          Price = p.Price,
+                          Quantity = p.Quantity
+                      }).AsEnumerable()
+                  })
+                  .ToList();
             return View(orders);
         }
 
