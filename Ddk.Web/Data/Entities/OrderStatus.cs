@@ -1,10 +1,11 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel;
+using System.ComponentModel.DataAnnotations;
 
 namespace Ddk.Web.Data.Entities
 {
     public enum OrderStatus
     {
-        [Display(Name = "Изчакваща")]
+        [DisplayName("Изчакваща")]
         Pending = 10,
         [Display(Name = "Изпратена")]
         Sent = 20,

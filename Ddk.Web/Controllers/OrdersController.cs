@@ -242,12 +242,37 @@ namespace Ddk.Web.Controllers
                 return NotFound();
             }
 
-            var order = await _context.Order.SingleOrDefaultAsync(m => m.Id == id);
-            if (order == null)
+            var orderVM = _context.Order
+                   .Select(o => new OrderVM()
+                   {
+                       Id = o.Id,
+                       Status = o.Status,
+                       Names = o.Names,
+                       PhoneNumber = o.PhoneNumber,
+                       Address = o.Address,
+                       City = o.City,
+                       MoreInformation = o.MoreInformation,
+                       CompanyName = o.CompanyName,
+                       CompanyEIK = o.CompanyEIK,
+                       Created = o.Created,
+                       OrderItems = o.Items.Select(p => new OrderItemVM()
+                       {
+                           ProductId = p.ProductId,
+                           Description = p.Description,
+                           Name = p.Name,
+                           Price = p.Price,
+                           Quantity = p.Quantity
+                       })
+                       .ToList()
+                   })
+                   .SingleOrDefault(o => o.Id == id);
+
+            if (orderVM == null)
             {
                 return NotFound();
             }
-            return View(order);
+
+            return View(orderVM);
         }
 
         // POST: Orders/Edit/5
