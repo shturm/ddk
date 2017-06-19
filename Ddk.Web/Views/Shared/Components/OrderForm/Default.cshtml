@@ -7,11 +7,18 @@
                 Данни за доставка
             </label>
         </div>
+        @{ 
+            var names = "";
+            if (!string.IsNullOrEmpty(Model.FirstName) && !string.IsNullOrEmpty(Model.LastName))
+            {
+                names = Model.FirstName + " " + Model.LastName;
+            }
+        }
         <div class="form-group">
-            <input class="form-control" name="Names" value="@(Model.FirstName + " " + Model.LastName)" placeholder="Име и фамилия" />
+            <input class="form-control" name="Names" value="@names" required placeholder="Име и фамилия" />
         </div>
         <div class="form-group">
-            <input class="form-control" name="PhoneNumber" value="@Model.PhoneNumber" placeholder="Телефон" />
+            <input class="form-control" name="PhoneNumber" value="@Model.PhoneNumber" required placeholder="Телефон" />
         </div>
         <div class="form-group">
             <label>
@@ -19,10 +26,10 @@
             </label>
         </div>
         <div class="form-group">
-            <input class="form-control" name="Address" value="@Model.Address" placeholder="Адрес" />
+            <input class="form-control" name="Address" value="@Model.Address" required placeholder="Адрес" />
         </div>
         <div class="form-group">
-            <input class="form-control" name="City" value="@Model.City" placeholder="Град / Село" />
+            <input class="form-control" name="City" value="@Model.City" required placeholder="Град / Село" />
         </div>
         <div class="form-group">
             <label>

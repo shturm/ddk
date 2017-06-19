@@ -59,7 +59,7 @@
                             </div>
 
                             <div class="col-md-1">
-                                <input name="OrderItems[@index].Quantity" value="@orderItem.Quantity" class="form-control" />
+                                <input name="OrderItems[@index].Quantity" value="@orderItem.Quantity" required class="form-control" />
                             </div>
 
                             <div class="col-md-1">
@@ -96,12 +96,12 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <input class="form-control" asp-for="Names" placeholder="Име и фамилия" />
+                            <input class="form-control" asp-for="Names" value="" required placeholder="Име и фамилия" />
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <input class="form-control" asp-for="PhoneNumber" placeholder="Телефон" />
+                            <input class="form-control" asp-for="PhoneNumber" required placeholder="Телефон" />
                         </div>
                     </div>
                     <div class="form-group">
@@ -113,12 +113,12 @@
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <input class="form-control" asp-for="Address" placeholder="Адрес" />
+                            <input class="form-control" asp-for="Address" required placeholder="Адрес" />
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-md-12">
-                            <input class="form-control" asp-for="City" placeholder="Град / Село" />
+                            <input class="form-control" asp-for="City" required placeholder="Град / Село" />
                         </div>
                     </div>
                     <div class="form-group">
