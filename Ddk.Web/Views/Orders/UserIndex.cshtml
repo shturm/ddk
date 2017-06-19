@@ -9,22 +9,22 @@
 <table class="table">
     <thead>
         <tr>
-            <th>
+            <th class="col-md-1">
                 Номер на поръчката
             </th>
-            <th>
+            <th class="col-md-2">
                 Дата на поръчка
             </th>
-            <th>
+            <th class="col-md-1">
                 Статус
             </th>
-            <th>
+            <th class="col-md-3">
                 Имена
             </th>
-            <th>
+            <th class="col-md-3">
                 Адрес на доставка
             </th>
-            <th>
+            <th class="col-md-1">
                 Обща цена
             </th>
         </tr>
@@ -33,26 +33,23 @@
         @foreach (var item in Model)
         {
             <tr class="" onclick="window.document.location='/../Orders/Details/@item.Id';" onmouseover="" style="cursor: pointer;">
-                <td>
-                    @item.Id
+                <td class="col-md-1">
+                    @Html.DisplayFor(model => item.Id)
                 </td>
-                <td>
-                    @item.Created
+                <td class="col-md-2">
+                    @Html.DisplayFor(model => item.Created)
                 </td>
-                <td>
-                    @item.Status
+                <td class="col-md-1">
+                    @Html.DisplayFor(model => item.Status)
                 </td>
-                <td>
-                    @item.Names
+                <td class="col-md-3">
+                    @Html.DisplayFor(model => item.Names)
                 </td>
-                <td>
+                <td class="col-md-3">
                     @(item.City + " " + item.Address)
                 </td>
-                <td>
+                <td class="col-md-1">
                     @(item.OrderItems.Select(p => p.Quantity * p.Price).Sum()) лв.
-                </td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
                 </td>
             </tr>
         }

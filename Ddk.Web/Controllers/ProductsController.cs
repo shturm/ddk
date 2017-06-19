@@ -160,7 +160,9 @@ namespace Ddk.Web.Controllers
                 EngineCcm = car.EngineCcm,
                 EngineHp = car.EngineHp,
                 EngineKw = car.EngineKw,
-                EngineFuel = car.EngineFuel
+                EngineFuel = car.EngineFuel,
+                YearFrom = car.YearFrom,
+                YearTo = car.YearTo
             };
             compatibleProducts.Products = _context.Product
                 .Include(p => p.CompatibilitySettings)
@@ -237,7 +239,9 @@ namespace Ddk.Web.Controllers
                     EngineCcm = car.EngineCcm,
                     EngineHp = car.EngineHp,
                     EngineKw = car.EngineKw,
-                    EngineFuel = car.EngineFuel
+                    EngineFuel = car.EngineFuel,
+                    YearFrom = car.YearFrom,
+                    YearTo = car.YearTo
                 }
             };
 

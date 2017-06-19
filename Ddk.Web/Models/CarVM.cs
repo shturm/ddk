@@ -13,7 +13,11 @@
         public string Body { get; set; }
         
         public string Type { get; set; }
-        
+
+        public int YearFrom { get; set; }
+
+        public int YearTo { get; set; }
+
         public int EngineCcm { get; set; }
 
         public int EngineHp { get; set; }
@@ -24,7 +28,7 @@
 
         public override string ToString()
         {
-            return $"{Make} {Model} {Variant} {Body} {Type} ({EngineFuel}, {EngineCcm} куб.см., {EngineHp} к.с., {EngineKw} кВ)";
+            return $"{Make} {Model} {Variant} {Body} {Type} ({EngineFuel}, {EngineCcm} куб.см., {EngineHp} к.с., {EngineKw} кВ, от: {YearFrom} до: {YearTo})";
         }
     }
 }

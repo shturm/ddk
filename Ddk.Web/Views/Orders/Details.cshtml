@@ -10,7 +10,10 @@
 
 <div>
     <hr />
-    <dl class="dl-horizontal">        
+    <label>
+        Информация
+    </label>
+    <dl class="dl-horizontal">
         <dt>
             <label>
                 Поръчка номер
@@ -78,13 +81,13 @@
                 Фирма
             </dt>
             <dd>
-                @Model.CompanyName
+                @(Model.CompanyName == "NULL" ? "Няма" : Model.CompanyName)
             </dd>
             <dt>
                 ЕИК Бустат
             </dt>
             <dd>
-                @Model.CompanyEIK
+                @(Model.CompanyEIK == "NULL" ? "Няма" : Model.CompanyEIK)
             </dd>
         </dl>
     </div>
