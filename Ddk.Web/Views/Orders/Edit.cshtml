@@ -6,7 +6,7 @@
 
 <div class="row">
     <div class="col-md-12">
-        <form asp-action="Create">
+        <form asp-area="" asp-controller="Orders" asp-action="Edit">
             <div class="form-horizontal">
                 <br />
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
@@ -23,6 +23,14 @@
                     </dt>
                     <dd>
                         @Html.DisplayFor(model => model.Created)
+                    </dd>
+                    <dt>
+                        <label>
+                            Променена на
+                        </label>
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Updated)
                     </dd>
                     <dt>
                         <label>
@@ -79,7 +87,7 @@
                     </dt>
                     <dd>
                         @{
-                            var companyName = Model.CompanyName == "NULL" ? "Няма" : Model.CompanyName;
+                            var companyName = Model.CompanyName == "NULL" ? "" : Model.CompanyName;
                         }
                         <input type="text" class="form-control" value="@companyName" name="CompanyName" />
                     </dd>
@@ -88,7 +96,7 @@
                     </dt>
                     <dd>
                         @{
-                            var companyEik = Model.CompanyEIK == "NULL" ? "Няма" : Model.CompanyEIK;
+                            var companyEik = Model.CompanyEIK == "NULL" ? "" : Model.CompanyEIK;
                         }
                         <input type="text" class="form-control" value="@companyName" name="CompanyEIK" />
                     </dd>
@@ -117,6 +125,7 @@
                         </div>
                     </div>
 
+                    <input asp-for="Id" type="hidden" />
                     <script>window.ORDERITEMS = [];</script>
                     @foreach (var orderItem in Model.OrderItems)
                     {
@@ -132,29 +141,29 @@
                         </script>
 
                         @*<div class="row order-item-row">
-                            <input type="hidden" class="product-id" value="" />
-                            <div class="col-md-1">
-                                <img src="@orderItem.ImageUrl" style="height: 70px; width: 70px;" />
-                            </div>
-                            <div class="col-md-5">
-                                <select name="OrderItems[0].Name" class="order-item-name"></select>
-                            </div>
-                            <div class="col-md-1">
-                                @orderItem.Price лв.
-                            </div>
-                            <div class="col-md-1">
-                                <input asp-for="@orderItem.Quantity" class="form-control" />
-                            </div>
-                            <div class="col-md-1">
-                                @(orderItem.Price * orderItem.Quantity) лв.
-                            </div>
-                            <div class="col-md-1">
-                                <input type="hidden" value="@orderItem.ProductId" class="product-id" />
-                                <button type="button" class="btn btn-danger remove-order-item">
-                                    Премахни
-                                </button>
-                            </div>
-                        </div>*@
+                                <input type="hidden" class="product-id" value="" />
+                                <div class="col-md-1">
+                                    <img src="@orderItem.ImageUrl" style="height: 70px; width: 70px;" />
+                                </div>
+                                <div class="col-md-5">
+                                    <select name="OrderItems[0].Name" class="order-item-name"></select>
+                                </div>
+                                <div class="col-md-1">
+                                    @orderItem.Price лв.
+                                </div>
+                                <div class="col-md-1">
+                                    <input asp-for="@orderItem.Quantity" class="form-control" />
+                                </div>
+                                <div class="col-md-1">
+                                    @(orderItem.Price * orderItem.Quantity) лв.
+                                </div>
+                                <div class="col-md-1">
+                                    <input type="hidden" value="@orderItem.ProductId" class="product-id" />
+                                    <button type="button" class="btn btn-danger remove-order-item">
+                                        Премахни
+                                    </button>
+                                </div>
+                            </div>*@
                     }
                 </div>
                 <br />
@@ -182,7 +191,8 @@
 
 @* add new orderItem row *@
 <div class="row add-new-order-item" style="display: none;">
-    <input  name="OrderItems[0].ProductId" type="hidden" class="product-id" value="" />
+    <input name="OrderItems[0].Id" type="hidden" class="order-item-id" value="" />
+    <input name="OrderItems[0].ProductId" type="hidden" class="product-id" value="" />
     <div class="col-md-1">
         <img src="~/imgs/no_pic.jpg" style="height: 70px; width: 70px;" />
     </div>
@@ -259,7 +269,7 @@
                 }
             });
         }
-        
+
         function addOrderItemRow(productId, name, quantity, price, total, image) {
             let $row = $('.add-new-order-item').first().clone();
             $row.removeClass('add-new-order-item');
@@ -271,13 +281,14 @@
 
             //TODO
             getAvaiableProductNames().then((data) => {
-                let productName = $row.find('.order-item-name');
-                initiateSelect2(productName, data, '');
+                let orderItemName = $row.find('.order-item-name');
+                initiateSelect2(orderItemName, data);
                 if (name) {
-                    $(productName).val(name).trigger('change');
+                    $(orderItemName).val(name).trigger('change');
+                    console.log($(orderItemName).val());
                 }
             });
-            
+
             if (productId) $row.find('.product-id').val(productId);
 
             if (quantity) $row.find('.order-item-quantity').val(quantity);
@@ -298,6 +309,7 @@
                 let $row = $(row);
 
                 let $productId = $row.find('.product-id');
+                let $orderItemId = $row.find('.order-item-id');
                 let $orderItemName = $row.find('.order-item-name');
                 let $orderItemPrice = $row.find('.order-item-price');
                 let $orderItemQuantity = $row.find('.order-item-quantity');
@@ -307,6 +319,9 @@
 
                 let $orderItemNameVal = $orderItemName.attr('name');
                 $orderItemName.attr('name', $orderItemNameVal.replace(pattern, index));
+
+                let $orderItemIdVal = $orderItemId.attr('name');
+                $orderItemId.attr('name', $orderItemIdVal.replace(pattern, index));
 
                 let $orderItemPriceVal = $orderItemPrice.attr('name');
                 $orderItemPrice.attr('name', $orderItemPriceVal.replace(pattern, index));

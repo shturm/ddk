@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Ddk.Data.Entities;
 
 namespace Ddk.Web.Controllers
 {
@@ -205,13 +206,14 @@ namespace Ddk.Web.Controllers
                     CompanyName = orderVM.CompanyName,
                     CompanyEIK = orderVM.CompanyEIK,
                     Created = DateTime.Now,
+                    Updated = DateTime.Now,
                     Items = orderVM.OrderItems.Select(p => new OrderItem()
                     {
                         ProductId = p.ProductId,
                         Description = p.Description,
                         Name = p.Name,
                         Price = p.Price,
-                        Quantity = p.Quantity                        
+                        Quantity = p.Quantity
                     })
                     .ToList()
                 };
@@ -224,7 +226,7 @@ namespace Ddk.Web.Controllers
 
                 _context.Order.Add(order);
                 _context.SaveChanges();
-                
+
                 var result = JsonConvert.SerializeObject(new List<OrderItemVM>());
                 HttpContext.Session.SetString(OrderItemsSessionDictionaryKey, result);
 
@@ -283,34 +285,72 @@ namespace Ddk.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Order order)
+        public async Task<IActionResult> Edit(EditOrderVM orderVM)
         {
-            if (id != order.Id)
+            //If / ModelState.IsValid dose not work
+            try
             {
-                return NotFound();
-            }
+                var order = _context.Order
+                    .Include(o => o.Items)
+                    .SingleOrDefault(o => o.Id == orderVM.Id);
+                order.Names = orderVM.Names;
+                order.PhoneNumber = orderVM.PhoneNumber;
+                order.Address = orderVM.Address;
+                order.City = orderVM.City;
+                order.CompanyName = orderVM.CompanyName;
+                order.CompanyEIK = orderVM.CompanyEIK;
+                order.Updated = DateTime.Now;
+                order.Status = orderVM.Status;
 
-            if (ModelState.IsValid)
-            {
-                try
+                foreach (var orderItemVM in orderVM.OrderItems)
                 {
-                    _context.Update(order);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.Id))
+                    var orderItem = order.Items.SingleOrDefault(or => or.ProductId == orderItemVM.ProductId);
+                    if (orderItem == null)
                     {
-                        return NotFound();
+                        var product = _context.Product.SingleOrDefault(p => p.Id == orderItemVM.ProductId);
+                        if (product == null)
+                        {
+                            product = new Product()
+                            {
+                                Name = orderItemVM.Name
+                            };
+                            _context.Add(product);
+                            _context.SaveChanges();
+                        }
+
+                        orderItem = new OrderItem()
+                        {
+                            ProductId = product.Id,
+                            Name = product.Name,
+                            Description = product.Description,
+                            Price = product.Price,
+                            Quantity = orderItemVM.Quantity
+                        };
+                        order.Items.Add(orderItem);
                     }
                     else
                     {
-                        throw;
+                        orderItem.Quantity = orderItemVM.Quantity;
                     }
                 }
-                return RedirectToAction("Index");
+
+                _context.Update(order);
+                await _context.SaveChangesAsync();
             }
-            return View(order);
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!OrderExists(orderVM.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction("Index");
+
+            return View(orderVM);
         }
 
         // GET: Orders/Delete/5
@@ -348,7 +388,7 @@ namespace Ddk.Web.Controllers
             {
                 return;
             }
-            
+
             var orderItems = new List<OrderItemVM>();
             if (HttpContext.Session.IsExists(OrderItemsSessionDictionaryKey))
             {
