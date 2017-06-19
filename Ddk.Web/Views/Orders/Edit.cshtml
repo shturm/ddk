@@ -122,13 +122,13 @@
                     {
                         <script>
                             window.ORDERITEMS.push({
+                                    "productId": @Html.Raw(orderItem.ProductId),
                                     "name": "@Html.Raw(orderItem.Name)",
                                     "quantity": @Html.Raw(orderItem.Quantity),
                                     "price": @Html.Raw(orderItem.Price),
                                     "total": @Html.Raw(orderItem.Quantity * orderItem.Price),
                                     "image": "@Html.Raw(orderItem.ImageUrl)"
                             });
-                            alert("@Html.Raw(orderItem.ImageUrl)");
                         </script>
 
                         @*<div class="row order-item-row">
@@ -137,7 +137,7 @@
                                 <img src="@orderItem.ImageUrl" style="height: 70px; width: 70px;" />
                             </div>
                             <div class="col-md-5">
-                                <select name="OrderItems[0].Name" class="product-name"></select>
+                                <select name="OrderItems[0].Name" class="order-item-name"></select>
                             </div>
                             <div class="col-md-1">
                                 @orderItem.Price лв.
@@ -160,7 +160,7 @@
                 <br />
                 <div class="form-group">
                     <div class="col-md-offset-9 col-md-1">
-                        <input type="submit" value="Запази" class="btn btn-default" />
+                        <input type="submit" value="Запази" class="btn btn-default save-changes" />
                     </div>
                 </div>
 
@@ -187,14 +187,14 @@
         <img src="~/imgs/no_pic.jpg" style="height: 70px; width: 70px;" />
     </div>
     <div class="col-md-5">
-        <select name="OrderItems[0].Name" class="product-name"></select>
+        <select name="OrderItems[0].Name" class="order-item-name"></select>
     </div>
     <div class="col-md-1">
         <label name="OrderItems[0].Price" class="order-item-price">
         </label>
     </div>
     <div class="col-md-1">
-        <input name="OrderItems[0].Quantity" value="1" class="product-quantity form-control" />
+        <input name="OrderItems[0].Quantity" value="1" class="order-item-quantity form-control" />
     </div>
     <div class="col-md-1">
         <label class="order-item-total">
@@ -221,7 +221,6 @@
                 if (document.AVAIABLE_PRODUCTS && document.AVAIABLE_PRODUCTS.length > 0) {
                     resolve(document.AVAIABLE_PRODUCTS);
                 }
-
                 let url = "/../Products/AvaiableProducts";
                 $.get(url, function (data, status) {
                     document.AVAIABLE_PRODUCTS = data;
@@ -231,18 +230,6 @@
 
             return promise;
         }
-
-        getAvaiableProductNames().then((data) => {
-            let products = $(".product-name");
-            for (let product of products) {
-                initiateSelect2($(product), data, 'Име на продукт');
-            }
-
-            let productIds = $(".product-id");
-            for (let id of productIds) {
-                $(id).select2({ data: data });
-            }
-        });
 
         function initiateSelect2(jqElement, data, placeholder = '') {
             jqElement.select2({
@@ -272,23 +259,28 @@
                 }
             });
         }
-
-
-        //////////////////////////////////////////////////
-        function addOrderItemRow(name, quantity, price, total, image) {
+        
+        function addOrderItemRow(productId, name, quantity, price, total, image) {
             let $row = $('.add-new-order-item').first().clone();
             $row.removeClass('add-new-order-item');
+            $row.addClass('order-item-row');
 
             $row.find(".remove-order-item").on("click", (e) => {
                 $(e.currentTarget).parent().parent().remove();
             });
 
-            getAvaiableProductNames().then((products) => {
-                initiateSelect2($row.find('.product-name'), ingredients, 'Име на продукт');
-                if (name) $row.find('.product-name').val(name).trigger('change');
+            //TODO
+            getAvaiableProductNames().then((data) => {
+                let productName = $row.find('.order-item-name');
+                initiateSelect2(productName, data, '');
+                if (name) {
+                    $(productName).val(name).trigger('change');
+                }
             });
             
-            if (quantity) $row.find('.product-quantity').val(quantity);
+            if (productId) $row.find('.product-id').val(productId);
+
+            if (quantity) $row.find('.order-item-quantity').val(quantity);
 
             if (price) $row.find('.order-item-price').html(price);
 
@@ -299,10 +291,32 @@
             $row.appendTo('.order-items-container').first();
             $row.toggle();
         }
-        ///////////////////////////////////////////////////////
 
+        function changeIndeces() {
+            $.each($(".order-item-row"), (index, row) => {
+                let pattern = /[\d+]/g;
+                let $row = $(row);
 
-        $(".product-name").on("change", (event) => {
+                let $productId = $row.find('.product-id');
+                let $orderItemName = $row.find('.order-item-name');
+                let $orderItemPrice = $row.find('.order-item-price');
+                let $orderItemQuantity = $row.find('.order-item-quantity');
+
+                let $productIdVal = $productId.attr('name');
+                $productId.attr('name', $productIdVal.replace(pattern, index));
+
+                let $orderItemNameVal = $orderItemName.attr('name');
+                $orderItemName.attr('name', $orderItemNameVal.replace(pattern, index));
+
+                let $orderItemPriceVal = $orderItemPrice.attr('name');
+                $orderItemPrice.attr('name', $orderItemPriceVal.replace(pattern, index));
+
+                let $orderItemQuantityVal = $orderItemQuantity.attr('name');
+                $orderItemQuantity.attr('name', $orderItemQuantityVal.replace(pattern, index));
+            });
+        }
+
+        $(".order-item-name").on("change", (event) => {
             var id = $(event.target).select2('data')[0].id;
             let $productIdHidden = $(event.target).parent().children(".product-id");
             $productIdHidden.val(id);
@@ -316,6 +330,10 @@
 
         $(".btn-new-order-item").on("click", () => {
             addOrderItemRow();
+        });
+
+        $(".save-changes").on("click", () => {
+            changeIndeces();
         });
 
         var $companyInfo = $(".company-info");
@@ -345,7 +363,7 @@
         // initialize orderItems
         if (ORDERITEMS && ORDERITEMS.length > 0) {
             for (let ord of ORDERITEMS) {
-                addOrderItemRow(ord.name, ord.quantity, ord.price, ord.total, ord.image);
+                addOrderItemRow(ord.productId, ord.name, ord.quantity, ord.price, ord.total, ord.image);
             }
         } else {
             addProductRow();

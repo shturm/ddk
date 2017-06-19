@@ -82,13 +82,13 @@ namespace Ddk.Web.Controllers
                       CompanyName = o.CompanyName,
                       CompanyEIK = o.CompanyEIK,
                       Created = o.Created,
-                      OrderItems = o.Items.Select(p => new OrderItemVM()
+                      OrderItems = o.Items.Select(or => new OrderItemVM()
                       {
-                          ProductId = p.ProductId,
-                          Description = p.Description,
-                          Name = p.Name,
-                          Price = p.Price,
-                          Quantity = p.Quantity
+                          ProductId = or.ProductId,
+                          Description = or.Description,
+                          Name = or.Name,
+                          Price = or.Price,
+                          Quantity = or.Quantity
                       }).AsEnumerable()
                   })
                   .ToList();
@@ -207,7 +207,7 @@ namespace Ddk.Web.Controllers
                     Created = DateTime.Now,
                     Items = orderVM.OrderItems.Select(p => new OrderItem()
                     {
-                        ProductId = p.Id,
+                        ProductId = p.ProductId,
                         Description = p.Description,
                         Name = p.Name,
                         Price = p.Price,
@@ -255,13 +255,16 @@ namespace Ddk.Web.Controllers
                        CompanyName = o.CompanyName,
                        CompanyEIK = o.CompanyEIK,
                        Created = o.Created,
-                       OrderItems = o.Items.Select(p => new OrderItemVM()
+                       OrderItems = o.Items.Select(or => new OrderItemVM()
                        {
-                           ProductId = p.ProductId,
-                           Description = p.Description,
-                           Name = p.Name,
-                           Price = p.Price,
-                           Quantity = p.Quantity
+                           ProductId = or.ProductId,
+                           Description = or.Description,
+                           Name = or.Name,
+                           Price = or.Price,
+                           Quantity = or.Quantity,
+                           ImageUrl = _context.Product
+                            .SingleOrDefault(p => p.Id == or.ProductId)
+                            .ImageUrl
                        })
                        .ToList()
                    })

@@ -504,6 +504,7 @@ namespace Ddk.Web.Controllers
         {
             var products = _context.Product
                 .Select(p => new { id = p.Id, text = p.SKU + " " + p.Name })
+                .Take(100)
                 .ToArray();
             return Json(products);
         }
