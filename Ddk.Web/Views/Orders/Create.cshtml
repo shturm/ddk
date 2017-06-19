@@ -240,7 +240,7 @@
         });
 
         $(".remove-order-item").on("click", (event) => {
-            let $productIdHidden = $(event.target).parent().children(".product-id").val();
+            let $productIdHidden = $(event.target).parent().parent().children(".product-id").val();
             $(event.target).parent().parent().html("");
             $.post("RemoveItemFromBasket", { productId: $productIdHidden });
         });

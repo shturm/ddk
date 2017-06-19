@@ -12,9 +12,13 @@
 
         public string Fuel { get; set; }
 
+        public int YearFrom { get; set; }
+
+        public int YearTo { get; set; }
+
         public override string ToString()
         {
-            return $"{Fuel} {Type}, {Ccm} куб.см., {Hp} к.с., {Kw} кВ";
+            return $"{Fuel} {Type}, {Ccm} куб.см., {Hp} к.с., {Kw} кВ, от: {YearFrom} до: {YearTo}";
         }
     }
 }

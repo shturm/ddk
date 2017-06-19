@@ -212,7 +212,7 @@ namespace Ddk.Web.Controllers
             {
                 return NotFound();
             }
-            
+
             var productVM = new ProductDetailsVM()
             {
                 Id = product.Id,
@@ -469,7 +469,9 @@ namespace Ddk.Web.Controllers
                     Kw = c.EngineKw,
                     Hp = c.EngineHp,
                     Fuel = c.EngineFuel,
-                    Type = c.Type
+                    Type = c.Type,
+                    YearFrom = c.YearFrom,
+                    YearTo = c.YearTo
                 })
                 .Select(x => x.Key)
                 .AsEnumerable()
@@ -488,7 +490,6 @@ namespace Ddk.Web.Controllers
             {
                 ViewData["categoryId"] = categoryId;
                 ViewData["categoryName"] = _context.ProductCategory.Single(c => c.Id == categoryId).Name;
-
                 return View("PickedProductCategoryChooseEngineType", engineOptions);
             }
         }
