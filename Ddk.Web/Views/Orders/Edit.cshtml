@@ -15,8 +15,11 @@
                     <div class="row">
                         <div class="col-md-1">
                         </div>
-                        <div class="col-md-5">
+                        <div class="col-md-3">
                             Продукт
+                        </div>
+                        <div class="col-md-2">
+                            Статус
                         </div>
                         <div class="col-md-1">
                             Цена
@@ -42,10 +45,12 @@
                                 <img src="@orderItem.ImageUrl" style="height: 70px; width: 70px;" />
                             </div>
 
-                            <div class="col-md-5">
+                            <div class="col-md-3">
                                 <select name="OrderItems[0].Name" class="product-name"></select>
                             </div>
-
+                            <div class="col-md-2">
+                                <select asp-for="Status" asp-items="Html.GetEnumSelectList<OrderStatus>()"></select>
+                            </div>
                             <div class="col-md-1">
                                 @orderItem.Price лв.
                             </div>
@@ -99,31 +104,26 @@
 
     <input type="hidden" class="product-id" value="" />
     <input type="hidden" class="product-sku" value="" />
-
     <div class="col-md-1">
     </div>
-
-    <div class="col-md-5">
+    <div class="col-md-3">
         <select name="OrderItems[0].Name" class="product-name"></select>
     </div>
-
-    <div class="col-md-1">
+    <div class="col-md-2">
+        <select asp-for="Status" asp-items="Html.GetEnumSelectList<OrderStatus>()"></select>
     </div>
-
+    <div class="col-md-2">
+    </div>
     <div class="col-md-1">
         <input name="OrderItems[0].Quantity" value="1" class="form-control" />
     </div>
-
     <div class="col-md-1">
     </div>
-
     <div class="col-md-1">
         <button type="button" class="btn btn-danger remove-order-item">
             Премахни
         </button>
-
     </div>
-
     <br />
     <br />
 </div>
