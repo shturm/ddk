@@ -211,7 +211,7 @@ namespace Ddk.Web.Controllers
                         Description = p.Description,
                         Name = p.Name,
                         Price = p.Price,
-                        Quantity = p.Quantity
+                        Quantity = p.Quantity                        
                     })
                     .ToList()
                 };

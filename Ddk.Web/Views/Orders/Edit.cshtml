@@ -117,9 +117,21 @@
                         </div>
                     </div>
 
+                    <script>window.ORDERITEMS = [];</script>
                     @foreach (var orderItem in Model.OrderItems)
                     {
-                        <div class="row order-item-row">
+                        <script>
+                            window.ORDERITEMS.push({
+                                    "name": "@Html.Raw(orderItem.Name)",
+                                    "quantity": @Html.Raw(orderItem.Quantity),
+                                    "price": @Html.Raw(orderItem.Price),
+                                    "total": @Html.Raw(orderItem.Quantity * orderItem.Price),
+                                    "image": "@Html.Raw(orderItem.ImageUrl)"
+                            });
+                            alert("@Html.Raw(orderItem.ImageUrl)");
+                        </script>
+
+                        @*<div class="row order-item-row">
                             <input type="hidden" class="product-id" value="" />
                             <div class="col-md-1">
                                 <img src="@orderItem.ImageUrl" style="height: 70px; width: 70px;" />
@@ -142,7 +154,7 @@
                                     Премахни
                                 </button>
                             </div>
-                        </div>
+                        </div>*@
                     }
                 </div>
                 <br />
@@ -170,24 +182,23 @@
 
 @* add new orderItem row *@
 <div class="row add-new-order-item" style="display: none;">
-
-    <input type="hidden" class="product-id" value="" />
-
+    <input  name="OrderItems[0].ProductId" type="hidden" class="product-id" value="" />
     <div class="col-md-1">
+        <img src="~/imgs/no_pic.jpg" style="height: 70px; width: 70px;" />
     </div>
-
     <div class="col-md-5">
         <select name="OrderItems[0].Name" class="product-name"></select>
     </div>
-
-    <div class="col-md-2">
+    <div class="col-md-1">
+        <label name="OrderItems[0].Price" class="order-item-price">
+        </label>
     </div>
     <div class="col-md-1">
+        <input name="OrderItems[0].Quantity" value="1" class="product-quantity form-control" />
     </div>
     <div class="col-md-1">
-        <input name="OrderItems[0].Quantity" value="1" class="form-control" />
-    </div>
-    <div class="col-md-1">
+        <label class="order-item-total">
+        </label>
     </div>
     <div class="col-md-1">
         <button type="button" class="btn btn-danger remove-order-item">
@@ -235,6 +246,7 @@
 
         function initiateSelect2(jqElement, data, placeholder = '') {
             jqElement.select2({
+                width: '100%',
                 data: data,
                 placeholder: placeholder,
 
@@ -261,6 +273,35 @@
             });
         }
 
+
+        //////////////////////////////////////////////////
+        function addOrderItemRow(name, quantity, price, total, image) {
+            let $row = $('.add-new-order-item').first().clone();
+            $row.removeClass('add-new-order-item');
+
+            $row.find(".remove-order-item").on("click", (e) => {
+                $(e.currentTarget).parent().parent().remove();
+            });
+
+            getAvaiableProductNames().then((products) => {
+                initiateSelect2($row.find('.product-name'), ingredients, 'Име на продукт');
+                if (name) $row.find('.product-name').val(name).trigger('change');
+            });
+            
+            if (quantity) $row.find('.product-quantity').val(quantity);
+
+            if (price) $row.find('.order-item-price').html(price);
+
+            if (total) $row.find('.order-item-total').html(total);
+
+            if (image) $row.find('img').attr("src", image);
+
+            $row.appendTo('.order-items-container').first();
+            $row.toggle();
+        }
+        ///////////////////////////////////////////////////////
+
+
         $(".product-name").on("change", (event) => {
             var id = $(event.target).select2('data')[0].id;
             let $productIdHidden = $(event.target).parent().children(".product-id");
@@ -274,13 +315,7 @@
         });
 
         $(".btn-new-order-item").on("click", () => {
-            let newOrderItem = $(".add-new-order-item").clone().attr("style", "").attr("class", "row");
-
-            let $product = newOrderItem.children(".product-name").first();
-
-            initiateSelect2($($product), document.AVAIABLE_PRODUCTS, 'Име на продукт');
-
-            $(".order-items-container").append(newOrderItem);
+            addOrderItemRow();
         });
 
         var $companyInfo = $(".company-info");
@@ -306,5 +341,14 @@
                 $companyEik.val("NULL");
             }
         });
+
+        // initialize orderItems
+        if (ORDERITEMS && ORDERITEMS.length > 0) {
+            for (let ord of ORDERITEMS) {
+                addOrderItemRow(ord.name, ord.quantity, ord.price, ord.total, ord.image);
+            }
+        } else {
+            addProductRow();
+        }
     </script>
 }
