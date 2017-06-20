@@ -302,37 +302,37 @@ namespace Ddk.Web.Controllers
                 order.Updated = DateTime.Now;
                 order.Status = orderVM.Status;
 
-                foreach (var orderItemVM in orderVM.OrderItems)
-                {
-                    var orderItem = order.Items.SingleOrDefault(or => or.ProductId == orderItemVM.ProductId);
-                    if (orderItem == null)
-                    {
-                        var product = _context.Product.SingleOrDefault(p => p.Id == orderItemVM.ProductId);
-                        if (product == null)
-                        {
-                            product = new Product()
-                            {
-                                Name = orderItemVM.Name
-                            };
-                            _context.Add(product);
-                            _context.SaveChanges();
-                        }
+                //foreach (var orderItemVM in orderVM.OrderItems)
+                //{
+                //    var orderItem = order.Items.SingleOrDefault(or => or.ProductId == orderItemVM.ProductId);
+                //    if (orderItem == null)
+                //    {
+                //        var product = _context.Product.SingleOrDefault(p => p.Id == orderItemVM.ProductId);
+                //        if (product == null)
+                //        {
+                //            product = new Product()
+                //            {
+                //                Name = orderItemVM.Name
+                //            };
+                //            _context.Add(product);
+                //            _context.SaveChanges();
+                //        }
 
-                        orderItem = new OrderItem()
-                        {
-                            ProductId = product.Id,
-                            Name = product.Name,
-                            Description = product.Description,
-                            Price = product.Price,
-                            Quantity = orderItemVM.Quantity
-                        };
-                        order.Items.Add(orderItem);
-                    }
-                    else
-                    {
-                        orderItem.Quantity = orderItemVM.Quantity;
-                    }
-                }
+                //        orderItem = new OrderItem()
+                //        {
+                //            ProductId = product.Id,
+                //            Name = product.Name,
+                //            Description = product.Description,
+                //            Price = product.Price,
+                //            Quantity = orderItemVM.Quantity
+                //        };
+                //        order.Items.Add(orderItem);
+                //    }
+                //    else
+                //    {
+                //        orderItem.Quantity = orderItemVM.Quantity;
+                //    }
+                //}
 
                 _context.Update(order);
                 await _context.SaveChangesAsync();

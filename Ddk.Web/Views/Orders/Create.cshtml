@@ -175,24 +175,7 @@
     <script src="~/vendors/select2/dist/js/select2.min.js"></script>
 
     <script>
-
-        document.AVAIABLE_PRODUCTS = [];
-        function getAvaiableProductNames() {
-            let promise = new Promise((resolve, reject) => {
-                if (document.AVAIABLE_PRODUCTS && document.AVAIABLE_PRODUCTS.length > 0) {
-                    resolve(document.AVAIABLE_PRODUCTS);
-                }
-
-                let url = "/../Products/AvaiableProducts";
-                $.get(url, function (data, status) {
-                    document.AVAIABLE_PRODUCTS = data;
-                    resolve(document.AVAIABLE_PRODUCTS);
-                });
-            });
-
-            return promise;
-        }
-
+        
         getAvaiableProductNames().then((data) => {
             let products = $(".product-name");
             for (let product of products) {
@@ -244,16 +227,7 @@
             $(event.target).parent().parent().html("");
             $.post("RemoveItemFromBasket", { productId: $productIdHidden });
         });
-
-        $(".btn-new-order-item").on("click", () => {
-            let newOrderItem = $(".add-new-order-item").clone().attr("style", "").attr("class", "row");
-
-            let $product = newOrderItem.children(".product-name").first();
-
-            initiateSelect2($($product), document.AVAIABLE_PRODUCTS, 'Име на продукт');
-
-            $(".order-items-container").append(newOrderItem);
-        });
+        
 
         var $companyInfo = $(".company-info");
         var $companyIngfoCheckbox = $(".checkbox-company-info");

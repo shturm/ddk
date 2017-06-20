@@ -98,7 +98,7 @@
                         @{
                             var companyEik = Model.CompanyEIK == "NULL" ? "" : Model.CompanyEIK;
                         }
-                        <input type="text" class="form-control" value="@companyName" name="CompanyEIK" />
+                        <input type="text" class="form-control" value="@companyEik" name="CompanyEIK" />
                     </dd>
                 </dl>
 
@@ -139,31 +139,6 @@
                                     "image": "@Html.Raw(orderItem.ImageUrl)"
                             });
                         </script>
-
-                        @*<div class="row order-item-row">
-                                <input type="hidden" class="product-id" value="" />
-                                <div class="col-md-1">
-                                    <img src="@orderItem.ImageUrl" style="height: 70px; width: 70px;" />
-                                </div>
-                                <div class="col-md-5">
-                                    <select name="OrderItems[0].Name" class="order-item-name"></select>
-                                </div>
-                                <div class="col-md-1">
-                                    @orderItem.Price лв.
-                                </div>
-                                <div class="col-md-1">
-                                    <input asp-for="@orderItem.Quantity" class="form-control" />
-                                </div>
-                                <div class="col-md-1">
-                                    @(orderItem.Price * orderItem.Quantity) лв.
-                                </div>
-                                <div class="col-md-1">
-                                    <input type="hidden" value="@orderItem.ProductId" class="product-id" />
-                                    <button type="button" class="btn btn-danger remove-order-item">
-                                        Премахни
-                                    </button>
-                                </div>
-                            </div>*@
                     }
                 </div>
                 <br />
@@ -191,13 +166,15 @@
 
 @* add new orderItem row *@
 <div class="row add-new-order-item" style="display: none;">
-    <input name="OrderItems[0].Id" type="hidden" class="order-item-id" value="" />
     <input name="OrderItems[0].ProductId" type="hidden" class="product-id" value="" />
     <div class="col-md-1">
         <img src="~/imgs/no_pic.jpg" style="height: 70px; width: 70px;" />
     </div>
     <div class="col-md-5">
-        <select name="OrderItems[0].Name" class="order-item-name"></select>
+        <select name="OrderItems[0].Name" class="form-control order-item-name" placeholder="Име на продукт" >
+            <option value="3620194" selected="selected">
+            </option>
+        </select>
     </div>
     <div class="col-md-1">
         <label name="OrderItems[0].Price" class="order-item-price">
@@ -225,29 +202,26 @@
 
     <script>
 
-        document.AVAIABLE_PRODUCTS = [];
-        function getAvaiableProductNames() {
-            let promise = new Promise((resolve, reject) => {
-                if (document.AVAIABLE_PRODUCTS && document.AVAIABLE_PRODUCTS.length > 0) {
-                    resolve(document.AVAIABLE_PRODUCTS);
-                }
-                let url = "/../Products/AvaiableProducts";
-                $.get(url, function (data, status) {
-                    document.AVAIABLE_PRODUCTS = data;
-                    resolve(document.AVAIABLE_PRODUCTS);
-                });
-            });
-
-            return promise;
-        }
-
-        function initiateSelect2(jqElement, data, placeholder = '') {
+        var url = "/../Products/AvaiableProducts";
+        function initiateSelect2(jqElement) {
             jqElement.select2({
                 width: '100%',
-                data: data,
-                placeholder: placeholder,
-
-                // new item stuff
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            query: params.term
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: data
+                        };
+                    },                    
+                    cache: true,
+                },
                 tags: true,
                 createTag: function (params) {
                     return {
@@ -256,6 +230,8 @@
                         newOption: true
                     }
                 },
+                escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                minimumInputLength: 1,
                 templateResult: function (data) {
                     let $result = $("<span></span>");
 
@@ -266,7 +242,8 @@
                     }
 
                     return $result;
-                }
+                },
+                //templateSelection: formatRepoSelection // omitted for brevity, see the source of this page
             });
         }
 
@@ -278,17 +255,13 @@
             $row.find(".remove-order-item").on("click", (e) => {
                 $(e.currentTarget).parent().parent().remove();
             });
+            
+            initiateSelect2($row.find('.order-item-name'));
 
-            //TODO
-            getAvaiableProductNames().then((data) => {
-                let orderItemName = $row.find('.order-item-name');
-                initiateSelect2(orderItemName, data);
-                if (name) {
-                    $(orderItemName).val(name).trigger('change');
-                    console.log($(orderItemName).val());
-                }
-            });
-
+            var $option = $("<option> </option>").val(name).text(name).attr("data-select2-tag", true);
+            $("<option selected></option>").val(productId).text(name).append($option);
+            $row.find("select").first().html($option);
+            
             if (productId) $row.find('.product-id').val(productId);
 
             if (quantity) $row.find('.order-item-quantity').val(quantity);
@@ -331,18 +304,18 @@
             });
         }
 
-        $(".order-item-name").on("change", (event) => {
-            var id = $(event.target).select2('data')[0].id;
-            let $productIdHidden = $(event.target).parent().children(".product-id");
-            $productIdHidden.val(id);
-        });
+        $('order-item-row').ready(() => { 
+            $(".order-item-name").on("change", (event) => {
+                var productId = $(event.target).select2('data')[0].id;
+                let $productIdHidden = $(event.target).parent().parent().children(".product-id");
+                $productIdHidden.val(productId);
+            });
 
-        $(".remove-order-item").on("click", (event) => {
-            let $productIdHidden = $(event.target).parent().children(".product-id").val();
-            $(event.target).parent().parent().html("");
-            $.post("RemoveItemFromBasket", { productId: $productIdHidden });
+            $(".remove-order-item").on("click", (event) => {
+                $(event.target).parent().parent().html("");
+            });  
         });
-
+                
         $(".btn-new-order-item").on("click", () => {
             addOrderItemRow();
         });
@@ -350,31 +323,7 @@
         $(".save-changes").on("click", () => {
             changeIndeces();
         });
-
-        var $companyInfo = $(".company-info");
-        var $companyIngfoCheckbox = $(".checkbox-company-info");
-        $companyIngfoCheckbox.on("change", () => {
-            if ($companyIngfoCheckbox.val() == "off") {
-                $companyIngfoCheckbox.val("on");
-                $companyInfo.show();
-            } else {
-                $companyIngfoCheckbox.val("off");
-                $companyInfo.hide();
-            }
-        });
-
-        var $companyName = $(".company-name");
-        var $companyEik = $(".company-eik");
-        var $btnSubmitOrder = $(".submit-order").on("click", () => {
-            if ($companyName.val() == "" || $companyIngfoCheckbox.val() == "off") {
-                $companyName.val("NULL");
-            }
-
-            if ($companyEik.val() == "" || $companyIngfoCheckbox.val() == "off") {
-                $companyEik.val("NULL");
-            }
-        });
-
+        
         // initialize orderItems
         if (ORDERITEMS && ORDERITEMS.length > 0) {
             for (let ord of ORDERITEMS) {

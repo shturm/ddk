@@ -500,10 +500,17 @@ namespace Ddk.Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult AvaiableProducts()
+        public JsonResult AvaiableProducts(string query)
         {
+            if (string.IsNullOrEmpty(query))
+            {
+                var test = new[] { new { id = "id", text = "text" } };
+                return Json(test);
+            }
+
             var products = _context.Product
-                .Select(p => new { id = p.Id, text = p.SKU + " " + p.Name })
+                .Where(p => p.Name.Contains(query))
+                .Select(p => new { id = p.Id, text = p.Name })
                 .Take(100)
                 .ToArray();
             return Json(products);
