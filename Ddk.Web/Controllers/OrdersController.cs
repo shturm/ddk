@@ -14,7 +14,6 @@ using Ddk.Data.Entities;
 
 namespace Ddk.Web.Controllers
 {
-    //[Authorize(Roles = "Admin")]
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
@@ -39,6 +38,7 @@ namespace Ddk.Web.Controllers
             }
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult AdminIndex()
         {
             var orders = _context.Order
@@ -66,6 +66,7 @@ namespace Ddk.Web.Controllers
             return View(orders);
         }
 
+        [Authorize]
         public IActionResult UserIndex()
         {
             var userId = _context.Users.SingleOrDefault(u => u.UserName == User.Identity.Name).Id;
@@ -97,6 +98,7 @@ namespace Ddk.Web.Controllers
         }
 
         // GET: Orders/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -106,6 +108,7 @@ namespace Ddk.Web.Controllers
 
             var order = await _context.Order
                 .SingleOrDefaultAsync(m => m.Id == id);
+
             if (order == null)
             {
                 return NotFound();
@@ -237,6 +240,7 @@ namespace Ddk.Web.Controllers
         }
 
         // GET: Orders/Edit/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -259,6 +263,7 @@ namespace Ddk.Web.Controllers
                        Created = o.Created,
                        OrderItems = o.Items.Select(or => new OrderItemVM()
                        {
+                           Id = or.Id,
                            ProductId = or.ProductId,
                            Description = or.Description,
                            Name = or.Name,
@@ -285,6 +290,7 @@ namespace Ddk.Web.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Edit(EditOrderVM orderVM)
         {
             //If / ModelState.IsValid dose not work
@@ -302,37 +308,50 @@ namespace Ddk.Web.Controllers
                 order.Updated = DateTime.Now;
                 order.Status = orderVM.Status;
 
-                //foreach (var orderItemVM in orderVM.OrderItems)
-                //{
-                //    var orderItem = order.Items.SingleOrDefault(or => or.ProductId == orderItemVM.ProductId);
-                //    if (orderItem == null)
-                //    {
-                //        var product = _context.Product.SingleOrDefault(p => p.Id == orderItemVM.ProductId);
-                //        if (product == null)
-                //        {
-                //            product = new Product()
-                //            {
-                //                Name = orderItemVM.Name
-                //            };
-                //            _context.Add(product);
-                //            _context.SaveChanges();
-                //        }
+                var removedOrderItems = order.Items
+                    .Where(x => !orderVM.OrderItems.Any(y => y.Id == x.Id))
+                    .ToList();
 
-                //        orderItem = new OrderItem()
-                //        {
-                //            ProductId = product.Id,
-                //            Name = product.Name,
-                //            Description = product.Description,
-                //            Price = product.Price,
-                //            Quantity = orderItemVM.Quantity
-                //        };
-                //        order.Items.Add(orderItem);
-                //    }
-                //    else
-                //    {
-                //        orderItem.Quantity = orderItemVM.Quantity;
-                //    }
-                //}
+                foreach (var orderItem in removedOrderItems)
+                {
+                    order.Items.Remove(orderItem);
+                }
+
+                foreach (var orderItemVM in orderVM.OrderItems)
+                {
+                    var orderItem = order.Items.SingleOrDefault(or => or.Id == orderItemVM.Id);
+                    if (orderItem == null)
+                    {
+                        var product = _context.Product.SingleOrDefault(p => p.Id == orderItemVM.ProductId);
+                        if (product == null)
+                        {
+                            product = new Product()
+                            {
+                                Name = orderItemVM.Name,
+                                CompatibilitySettings = new List<CompatibilitySetting>()
+                            };
+                            _context.Add(product);
+                            //throw error
+                            //_context.SaveChanges();
+                        }
+                        else
+                        {
+                            orderItem = new OrderItem()
+                            {
+                                ProductId = product.Id,
+                                Name = product.Name,
+                                Description = product.Description,
+                                Price = product.Price,
+                                Quantity = orderItemVM.Quantity
+                            };
+                            order.Items.Add(orderItem);
+                        }
+                    }
+                    else
+                    {
+                        orderItem.Quantity = orderItemVM.Quantity;
+                    }
+                }
 
                 _context.Update(order);
                 await _context.SaveChangesAsync();
@@ -349,11 +368,10 @@ namespace Ddk.Web.Controllers
                 }
             }
             return RedirectToAction("Index");
-
-            return View(orderVM);
         }
 
         // GET: Orders/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -374,6 +392,7 @@ namespace Ddk.Web.Controllers
         // POST: Orders/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             var order = await _context.Order.SingleOrDefaultAsync(m => m.Id == id);

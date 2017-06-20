@@ -28,7 +28,7 @@
 
         public override string ToString()
         {
-            return $"{Make} {Model} {Variant} {Body} {Type} ({EngineFuel}, {EngineCcm} куб.см., {EngineHp} к.с., {EngineKw} кВ, от: {YearFrom} до: {YearTo})";
+            return $"{Make} {Model} {Variant} {Body} {Type} ({EngineFuel}, {EngineCcm} куб.см., {EngineHp} к.с., {EngineKw} кВ, от: {YearFrom}г. до: {YearTo}г.)";
         }
     }
 }

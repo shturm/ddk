@@ -54,10 +54,11 @@
             </div>
         </div>
         <div class="form-group">
-            <input type="hidden" value="@ViewData["productId"]" name="Products[0].Id" />
-            @*<input type="hidden" value="@Model.Name" name="Products[0].Name" />
-            <input type="hidden" value="@Model.Description" name="Products[0].Description" />
-            <input type="hidden" value="@Model.Price" name="Products[0].Price" />*@
+            <input type="hidden" value="@ViewData["productId"]" name="OrderItems[0].ProductId" />
+            <input type="hidden" value="@ViewData["productName"]" name="OrderItems[0].Name" />
+            <input type="hidden" value="@ViewData["productDescription"]" name="OrderItems[0].Description" />
+            <input type="hidden" value="@ViewData["productPrice"]" name="OrderItems[0].Price" />
+            <input type="hidden" value="@ViewData["productQuantity"]" name="OrderItems[0].Quantity" />
         </div>
         <div class="form-group">
             <div class="col-md-offset-7 col-md-4">

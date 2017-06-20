@@ -4,7 +4,6 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Ddk.Data;
-using Ddk.Web.Data.Entities;
 
 namespace Ddk.Data.Migrations
 {

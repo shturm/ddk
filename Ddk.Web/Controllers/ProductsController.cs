@@ -510,7 +510,7 @@ namespace Ddk.Web.Controllers
 
             var products = _context.Product
                 .Where(p => p.Name.Contains(query))
-                .Select(p => new { id = p.Id, text = p.Name })
+                .Select(p => new { id = p.Id, text = p.Name, price = p.Price, imageUrl = p.ImageUrl })
                 .Take(100)
                 .ToArray();
             return Json(products);

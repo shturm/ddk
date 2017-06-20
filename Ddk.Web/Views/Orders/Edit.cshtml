@@ -131,6 +131,7 @@
                     {
                         <script>
                             window.ORDERITEMS.push({
+                                    "orderItemId": @Html.Raw(orderItem.Id),
                                     "productId": @Html.Raw(orderItem.ProductId),
                                     "name": "@Html.Raw(orderItem.Name)",
                                     "quantity": @Html.Raw(orderItem.Quantity),
@@ -165,27 +166,37 @@
 </div>
 
 @* add new orderItem row *@
-<div class="row add-new-order-item" style="display: none;">
-    <input name="OrderItems[0].ProductId" type="hidden" class="product-id" value="" />
+<div class="row order-item-row add-new-order-item" style="display: none;">
+    <input name="OrderItems[0].Id" type="hidden" class="order-item-id" value="0" />
+    <input name="OrderItems[0].ProductId" type="hidden" class="product-id" value="0" />
     <div class="col-md-1">
         <img src="~/imgs/no_pic.jpg" style="height: 70px; width: 70px;" />
     </div>
     <div class="col-md-5">
         <select name="OrderItems[0].Name" class="form-control order-item-name" placeholder="Име на продукт" >
             <option value="3620194" selected="selected">
+                Име на продукт
             </option>
         </select>
     </div>
     <div class="col-md-1">
         <label name="OrderItems[0].Price" class="order-item-price">
+            0
         </label>
+        <span>
+            лв.
+        </span>
     </div>
     <div class="col-md-1">
         <input name="OrderItems[0].Quantity" value="1" class="order-item-quantity form-control" />
     </div>
     <div class="col-md-1">
         <label class="order-item-total">
+            0
         </label>
+        <span>
+            лв.
+        </span>
     </div>
     <div class="col-md-1">
         <button type="button" class="btn btn-danger remove-order-item">
@@ -247,10 +258,9 @@
             });
         }
 
-        function addOrderItemRow(productId, name, quantity, price, total, image) {
+        function addOrderItemRow(orderItemId, productId, name, quantity, price, total, image) {
             let $row = $('.add-new-order-item').first().clone();
             $row.removeClass('add-new-order-item');
-            $row.addClass('order-item-row');
 
             $row.find(".remove-order-item").on("click", (e) => {
                 $(e.currentTarget).parent().parent().remove();
@@ -258,10 +268,14 @@
             
             initiateSelect2($row.find('.order-item-name'));
 
-            var $option = $("<option> </option>").val(name).text(name).attr("data-select2-tag", true);
-            $("<option selected></option>").val(productId).text(name).append($option);
-            $row.find("select").first().html($option);
-            
+            if (name) {
+                var $option = $("<option> </option>").val(name).text(name).attr("data-select2-tag", true);
+                $("<option selected></option>").val(productId).text(name).append($option);
+                $row.find("select").first().html($option);
+            }
+
+            if (orderItemId) $row.find('.order-item-id').val(orderItemId);
+
             if (productId) $row.find('.product-id').val(productId);
 
             if (quantity) $row.find('.order-item-quantity').val(quantity);
@@ -280,21 +294,20 @@
             $.each($(".order-item-row"), (index, row) => {
                 let pattern = /[\d+]/g;
                 let $row = $(row);
-
                 let $productId = $row.find('.product-id');
                 let $orderItemId = $row.find('.order-item-id');
                 let $orderItemName = $row.find('.order-item-name');
                 let $orderItemPrice = $row.find('.order-item-price');
                 let $orderItemQuantity = $row.find('.order-item-quantity');
+                
+                let $orderItemIdVal = $orderItemId.attr('name');
+                $orderItemId.attr('name', $orderItemIdVal.replace(pattern, index));
 
                 let $productIdVal = $productId.attr('name');
                 $productId.attr('name', $productIdVal.replace(pattern, index));
 
                 let $orderItemNameVal = $orderItemName.attr('name');
                 $orderItemName.attr('name', $orderItemNameVal.replace(pattern, index));
-
-                let $orderItemIdVal = $orderItemId.attr('name');
-                $orderItemId.attr('name', $orderItemIdVal.replace(pattern, index));
 
                 let $orderItemPriceVal = $orderItemPrice.attr('name');
                 $orderItemPrice.attr('name', $orderItemPriceVal.replace(pattern, index));
@@ -304,20 +317,47 @@
             });
         }
 
-        $('order-item-row').ready(() => { 
+        function loadEventsOnOrderItemRow() {
             $(".order-item-name").on("change", (event) => {
-                var productId = $(event.target).select2('data')[0].id;
-                let $productIdHidden = $(event.target).parent().parent().children(".product-id");
-                $productIdHidden.val(productId);
+                let productId = $(event.target).select2('data')[0].id;
+                $(event.target).parent().parent().find(".product-id").val(productId);
+
+                let imageUrl = $(event.target).select2('data')[0].imageUrl;
+                if (imageUrl) {
+                    $(event.target).parent().parent().find("img").attr("src", imageUrl).trigger("change");
+                } else {
+                    $(event.target).parent().parent().find("img").attr("src", "/imgs/no_pic.jpg").trigger("change");
+                }
+
+                let price = $(event.target).select2('data')[0].price;
+                $(event.target).parent().parent().find(".order-item-price").text(price);
+                $(event.target).parent().parent().find(".order-item-quantity").val(1);
+                $(event.target).parent().parent().find(".order-item-total").text(price);
+
+                let name = $(event.target).select2('data')[0].text;
+                var $option = $("<option> </option>").val(name).text(name).attr("data-select2-tag", true);
+                $("<option selected></option>").val(productId).text(name).append($option);
+                $(event.target).html($option);                
             });
 
             $(".remove-order-item").on("click", (event) => {
                 $(event.target).parent().parent().html("");
-            });  
+            }); 
+
+            $(".order-item-quantity").on("change", (event) => { 
+                var quantity = $(event.target).val();
+                var price = $(event.target).parent().parent().find(".order-item-price").text();
+                $(event.target).parent().parent().find(".order-item-total").text(quantity * price);
+            });
+        }
+
+        $('.order-item-row').ready(() => { 
+            loadEventsOnOrderItemRow(); 
         });
                 
         $(".btn-new-order-item").on("click", () => {
             addOrderItemRow();
+            loadEventsOnOrderItemRow();
         });
 
         $(".save-changes").on("click", () => {
@@ -327,7 +367,7 @@
         // initialize orderItems
         if (ORDERITEMS && ORDERITEMS.length > 0) {
             for (let ord of ORDERITEMS) {
-                addOrderItemRow(ord.productId, ord.name, ord.quantity, ord.price, ord.total, ord.image);
+                addOrderItemRow(ord.orderItemId, ord.productId, ord.name, ord.quantity, ord.price, ord.total, ord.image);
             }
         } else {
             addProductRow();

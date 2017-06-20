@@ -17,7 +17,13 @@ namespace Ddk.Web.ViewComponents
 
         public async Task<IViewComponentResult> InvokeAsync(int productId)
         {
-            ViewData["productId"] = productId;
+            var product = await _context.Product.SingleOrDefaultAsync(p => p.Id == productId);
+            ViewData["productId"] = product.Id;
+            ViewData["productName"] = product.Name;
+            ViewData["productDescription"] = product.Description;
+            ViewData["productPrice"] = product.Price;
+            ViewData["productQuantity"] = 1;
+
             var deliveryData = new DeliveryDataViewModel();
             var dbUser = await _context.Users.SingleOrDefaultAsync(u => u.UserName == User.Identity.Name);
             if (dbUser != null)
