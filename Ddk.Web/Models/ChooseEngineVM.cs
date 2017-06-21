@@ -18,7 +18,7 @@
 
         public override string ToString()
         {
-            return $"{Fuel} {Type}, {Ccm} куб.см., {Hp} к.с., {Kw} кВ, от: {YearFrom} до: {YearTo}";
+            return $"{Fuel} {Type}, {Ccm} куб.см., {Hp} к.с., {Kw} кВ, {YearFrom} г. - {YearTo} г.";
         }
     }
 }

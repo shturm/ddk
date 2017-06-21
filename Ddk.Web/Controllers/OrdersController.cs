@@ -107,6 +107,7 @@ namespace Ddk.Web.Controllers
             }
 
             var order = await _context.Order
+                .Include(x=>x.Items)
                 .SingleOrDefaultAsync(m => m.Id == id);
 
             if (order == null)
