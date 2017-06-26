@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 using Ddk.Data.Entities;
+using Ddk.Web.Services;
 
 namespace Ddk.Web.Controllers
 {
@@ -234,6 +235,7 @@ namespace Ddk.Web.Controllers
                 var result = JsonConvert.SerializeObject(new List<OrderItemVM>());
                 HttpContext.Session.SetString(OrderItemsSessionDictionaryKey, result);
 
+                this.SendMessageToAdmins(order);
                 return RedirectToAction("Index");
             }
 
@@ -454,6 +456,27 @@ namespace Ddk.Web.Controllers
         private bool OrderExists(int id)
         {
             return _context.Order.Any(e => e.Id == id);
+        }
+
+        private void SendMessageToAdmins(Order order)
+        {
+            var subject = "order cofirmation";
+            var message =
+                $"Здравейте, \r\n" +
+                $"Направена е поръчка номер: {order.Id} \r\n";
+
+            foreach (var orderItem in order.Items)
+            {
+                message += $"{orderItem.Name}, Цена: {orderItem.Price}, Броя: {orderItem.Quantity}";
+            }
+
+            var sum = order.Items.Select(i => i.Price * i.Quantity).Sum();
+            message += $"Общо: {sum} лв.";
+            message += $"Поздрави";
+            message += $"DaiDaKaram.com";
+            
+            var emailSender = new EmailSender();
+            emailSender.SendEmail(subject, message);
         }
     }
 }
