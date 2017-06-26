@@ -48,6 +48,7 @@ namespace Ddk.Web.Controllers
                         Id = o.Id,
                         Status = o.Status,
                         Names = o.Names,
+                        Email = o.Email,
                         PhoneNumber = o.PhoneNumber,
                         Address = o.Address,
                         City = o.City,
@@ -78,6 +79,7 @@ namespace Ddk.Web.Controllers
                       Id = o.Id,
                       Status = o.Status,
                       Names = o.Names,
+                      Email = o.Email,
                       PhoneNumber = o.PhoneNumber,
                       Address = o.Address,
                       City = o.City,
@@ -121,6 +123,7 @@ namespace Ddk.Web.Controllers
                 Id = order.Id,
                 Status = order.Status,
                 Names = order.Names,
+                Email = order.Email,
                 PhoneNumber = order.PhoneNumber,
                 Address = order.Address,
                 City = order.City,
@@ -204,6 +207,7 @@ namespace Ddk.Web.Controllers
                 {
                     Status = OrderStatus.Pending,
                     Names = orderVM.Names,
+                    Email = orderVM.Email,
                     PhoneNumber = orderVM.PhoneNumber,
                     Address = orderVM.Address,
                     City = orderVM.City,
@@ -257,6 +261,7 @@ namespace Ddk.Web.Controllers
                        Id = o.Id,
                        Status = o.Status,
                        Names = o.Names,
+                       Email = o.Email,
                        PhoneNumber = o.PhoneNumber,
                        Address = o.Address,
                        City = o.City,
@@ -303,6 +308,7 @@ namespace Ddk.Web.Controllers
                     .Include(o => o.Items)
                     .SingleOrDefault(o => o.Id == orderVM.Id);
                 order.Names = orderVM.Names;
+                order.Email = orderVM.Email;
                 order.PhoneNumber = orderVM.PhoneNumber;
                 order.Address = orderVM.Address;
                 order.City = orderVM.City;

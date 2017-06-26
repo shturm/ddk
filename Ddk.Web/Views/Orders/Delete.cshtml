@@ -10,7 +10,7 @@
 <div>
     <h4>Order</h4>
     <hr />
-    <dl class="dl-horizontal">
+    <@*dl class="dl-horizontal">
         <input type="hidden" asp-for="Id" />
         <dt>
             @Html.DisplayNameFor(model => model.OrderDate)
@@ -18,7 +18,7 @@
         <dd>
             @Html.DisplayFor(model => model.OrderDate)
         </dd>
-    </dl>
+    </dl>*@
     
     <form asp-action="Delete">
         <div class="form-actions no-color">
