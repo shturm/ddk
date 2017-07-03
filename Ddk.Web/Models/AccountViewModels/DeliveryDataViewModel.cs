@@ -17,5 +17,7 @@
         public string CompanyEIK { get; set; }
 
         public string CompanyName { get; set; }
+
+        public string Tax { get; set; }
     }
 }

@@ -56,6 +56,7 @@ namespace Ddk.Web.Controllers
                         CompanyName = o.CompanyName,
                         CompanyEIK = o.CompanyEIK,
                         Created = o.Created,
+                        Tax = o.Tax,
                         OrderItems = o.Items.Select(p => new OrderItemVM()
                         {
                             ProductId = p.Id,
@@ -86,6 +87,7 @@ namespace Ddk.Web.Controllers
                       MoreInformation = o.MoreInformation,
                       CompanyName = o.CompanyName,
                       CompanyEIK = o.CompanyEIK,
+                      Tax = o.Tax,
                       Created = o.Created,
                       OrderItems = o.Items.Select(or => new OrderItemVM()
                       {
@@ -130,6 +132,7 @@ namespace Ddk.Web.Controllers
                 MoreInformation = order.MoreInformation,
                 CompanyName = order.CompanyName,
                 CompanyEIK = order.CompanyEIK,
+                Tax = order.Tax,
                 Created = order.Created,
                 OrderItems = order.Items.Select(p => new OrderItemVM()
                 {
@@ -185,6 +188,7 @@ namespace Ddk.Web.Controllers
                     order.City = user.City;
                     order.CompanyName = user.CompanyName;
                     order.CompanyEIK = user.CompanyEIK;
+                    order.Tax = user.Tax;
                 }
 
                 return View(order);
@@ -214,6 +218,7 @@ namespace Ddk.Web.Controllers
                     MoreInformation = orderVM.MoreInformation,
                     CompanyName = orderVM.CompanyName,
                     CompanyEIK = orderVM.CompanyEIK,
+                    Tax = orderVM.Tax,
                     Created = DateTime.Now,
                     Updated = DateTime.Now,
                     Items = orderVM.OrderItems.Select(p => new OrderItem()
@@ -240,7 +245,7 @@ namespace Ddk.Web.Controllers
                 HttpContext.Session.SetString(OrderItemsSessionDictionaryKey, result);
 
                 this.SendMessageToAdmins(order);
-                return RedirectToAction("Index");
+                return View("SuccessfulÎrder");
             }
 
             return View(orderVM);
@@ -268,6 +273,7 @@ namespace Ddk.Web.Controllers
                        MoreInformation = o.MoreInformation,
                        CompanyName = o.CompanyName,
                        CompanyEIK = o.CompanyEIK,
+                       Tax = o.Tax,
                        Created = o.Created,
                        OrderItems = o.Items.Select(or => new OrderItemVM()
                        {
@@ -314,6 +320,7 @@ namespace Ddk.Web.Controllers
                 order.City = orderVM.City;
                 order.CompanyName = orderVM.CompanyName;
                 order.CompanyEIK = orderVM.CompanyEIK;
+                order.Tax = orderVM.Tax;
                 order.Updated = DateTime.Now;
                 order.Status = orderVM.Status;
 

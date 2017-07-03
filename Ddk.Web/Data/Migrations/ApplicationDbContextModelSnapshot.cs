@@ -61,6 +61,8 @@ namespace Ddk.Data.Migrations
 
                     b.Property<string>("SecurityStamp");
 
+                    b.Property<string>("Tax");
+
                     b.Property<bool>("TwoFactorEnabled");
 
                     b.Property<string>("UserName")
@@ -208,6 +210,8 @@ namespace Ddk.Data.Migrations
                     b.Property<string>("PhoneNumber");
 
                     b.Property<int>("Status");
+
+                    b.Property<string>("Tax");
 
                     b.Property<DateTime>("Updated");
 

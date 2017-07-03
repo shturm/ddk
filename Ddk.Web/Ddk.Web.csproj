@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="wwwroot\imgs\no_pic.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Ddk.db" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 

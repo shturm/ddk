@@ -500,7 +500,7 @@ namespace Ddk.Web.Controllers
 
         [HttpGet]
         [AllowAnonymous]
-        public JsonResult AvaiableProducts(string query)
+        public JsonResult AvaiableProducts(string query = null)
         {
             if (string.IsNullOrEmpty(query))
             {
