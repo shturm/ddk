@@ -1,7 +1,6 @@
 ﻿using MailKit.Net.Smtp;
 using Microsoft.Extensions.Configuration;
 using MimeKit;
-using System;
 using System.IO;
 
 namespace Ddk.Web.Services
@@ -11,12 +10,6 @@ namespace Ddk.Web.Services
         private readonly IConfigurationRoot configuration;
 
         private const string ConfigurationFileName = "appsettings.json";
-
-        private const string AdminEmail = "office@daidakaram.com";
-
-        private const string HostName = "alfa.superhosting.bg";
-
-        private const int SmtpPort = 465;
 
         public EmailSender()
         {
@@ -28,6 +21,9 @@ namespace Ddk.Web.Services
 
         public void SendEmail(string subject, string message)
         {
+            var adminEmail = this.configuration["EmailSender:adminEmail"];
+            var hostName = this.configuration["EmailSender:hostName"];
+            var smtpPort = int.Parse(this.configuration["EmailSender:smtpPort"]);
             var username = this.configuration["EmailSender:username"];
             var password = this.configuration["EmailSender:password"];
             if (string.IsNullOrEmpty(username) || string.IsNullOrEmpty(password))
@@ -44,7 +40,7 @@ namespace Ddk.Web.Services
                 }
 
                 var mimeMessage = new MimeMessage();
-                mimeMessage.From.Add(new MailboxAddress(AdminEmail));
+                mimeMessage.From.Add(new MailboxAddress(adminEmail));
                 mimeMessage.To.Add(new MailboxAddress(email));
                 mimeMessage.Subject = subject;
 
@@ -58,7 +54,7 @@ namespace Ddk.Web.Services
                     // For demo-purposes, accept all SSL certificates (in case the server supports STARTTLS)
                     client.ServerCertificateValidationCallback = (s, c, h, e) => true;
 
-                    client.Connect(HostName, SmtpPort, useSsl: true);
+                    client.Connect(hostName, smtpPort, useSsl: true);
 
                     // Note: since we don't have an OAuth2 token, disable
                     // the XOAUTH2 authentication mechanism.

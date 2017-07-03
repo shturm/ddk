@@ -473,7 +473,7 @@ namespace Ddk.Web.Controllers
 
         private void SendMessageToAdmins(Order order)
         {
-            var subject = "order cofirmation";
+            var subject = $"Поръчка №{order.Id}";
             var message =
                 $"Здравейте, \r\n" +
                 $"Направена е поръчка номер: {order.Id} \r\n";
@@ -484,9 +484,9 @@ namespace Ddk.Web.Controllers
             }
 
             var sum = order.Items.Select(i => i.Price * i.Quantity).Sum();
-            message += $"Общо: {sum} лв.";
+            message += $" Общо: {sum} лв. ДДС: {order.Tax} лв. \r\n";
             message += $"Поздрави";
-            message += $"DaiDaKaram.com";
+            message += $" DaiDaKaram.com";
             
             var emailSender = new EmailSender();
             emailSender.SendEmail(subject, message);
