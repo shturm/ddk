@@ -1,4 +1,4 @@
-using Ddk.Data;
+﻿using Ddk.Data;
 using Ddk.Web.Data.Entities;
 using Ddk.Web.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -466,19 +466,32 @@ namespace Ddk.Web.Controllers
 
         private void SendMessageToAdmins(Order order)
         {
-            var subject = "order cofirmation";
+            var subject = $"Нова поръчка #{order.Id} в DaiDaKaram.com";
             var message =
-                $"���������, \r\n" +
-                $"��������� � ������� �����: {order.Id} \r\n";
+                $"Потвърждение за поръчка, \n\n" +
+                $"Направена е поръчка: №{order.Id} \n\n";
 
+
+            message += $"ДАННИ ЗА ДОСТАВКА\n\n";
+            message += $"Име: {order.Names}\n";
+            message += $"Град: {order.City}\n";
+            message += $"Адрес: {order.Address}\n";
+            message += $"Телефон: {order.PhoneNumber}\n";
+            message += $"Допълнителни инструкции: {order.MoreInformation}\n\n";
+
+            message += $"ДАННИ ЗА ФАКТУРА\n\n";
+            message += $"Фирма: {order.CompanyName ?? ""}\n";
+            message += $"ЕИК: {order.CompanyEIK ?? ""}\n";
+            message += $"Адрес: {order.Address}\n\n";
+
+            message += $"АРТИКУЛИ\n\n";
             foreach (var orderItem in order.Items)
             {
-                message += $"{orderItem.Name}, ����: {orderItem.Price}, ����: {orderItem.Quantity}";
+                message += $"{orderItem.Name}, ед. цена: {orderItem.Price} лв., брой: {orderItem.Quantity}, общо {orderItem.Price * orderItem.Quantity} лв.";
             }
 
             var sum = order.Items.Select(i => i.Price * i.Quantity).Sum();
-            message += $"����: {sum} ��.";
-            message += $"��������";
+            message += $"\n\nОБЩА СУМА: {sum} лв.\n\n";
             message += $"DaiDaKaram.com";
             
             var emailSender = new EmailSender();

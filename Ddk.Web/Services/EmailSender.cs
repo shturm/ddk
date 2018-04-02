@@ -12,7 +12,7 @@ namespace Ddk.Web.Services
 
         private const string ConfigurationFileName = "appsettings.json";
 
-        private const string AdminEmail = "office@daidakaram.com";
+        private const string AdminEmail = "no-reply@daidakaram.com";
 
         private const string HostName = "alfa.superhosting.bg";
 
