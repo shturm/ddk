@@ -157,6 +157,11 @@
                                 <input class="form-control company-eik" name="CompanyEIK" value="@Model.CompanyEIK" placeholder="ЕИК Булстат" />
                             </div>
                         </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <input class="form-control company-tax" name="Tax" value="@Model.Tax" placeholder="ДДС" />
+                            </div>
+                        </div>
                     </div>
                     <div class="col-md-2">
                         <input type="submit" value="Поръчай" class="btn btn-success submit-order" />
@@ -181,18 +186,17 @@
 
     <script>
         
-        getAvaiableProductNames().then((data) => {
-            let products = $(".product-name");
-            for (let product of products) {
-                initiateSelect2($(product), data, 'Име на продукт');
-            }
+        function getAvaiableProductNames() {
+            let promise = new Promise((resolve, reject) => {
+                let url = "/../Products/AvaiableProducts";
+                $.get(url, function (data, status) {
+                    resolve(document.AVAIABLE_PRODUCTS);
+                });
+            });
 
-            let productIds = $(".product-id");
-            for (let id of productIds) {
-                $(id).select2({ data: data });
-            }
-        });
-
+            return promise;
+        }
+        
         function initiateSelect2(jqElement, data, placeholder = '') {
             jqElement.select2({
                 data: data,
@@ -221,6 +225,18 @@
             });
         }
 
+        getAvaiableProductNames().then((data) => {
+            let products = $(".product-name");
+            for (let product of products) {
+                initiateSelect2($(product), data, 'Име на продукт');
+            }
+
+            let productIds = $(".product-id");
+            for (let id of productIds) {
+                $(id).select2({ data: data });
+            }
+        });
+
         $(".product-name").on("change", (event) => {
             var id = $(event.target).select2('data')[0].id;
             let $productIdHidden = $(event.target).parent().children(".product-id");
@@ -248,6 +264,7 @@
 
         var $companyName = $(".company-name");
         var $companyEik = $(".company-eik");
+        var $companyTax = $(".company-tax");
         var $btnSubmitOrder = $(".submit-order").on("click", () => {
             if ($companyName.val() == "" || $companyIngfoCheckbox.val() == "off") {
                 $companyName.val("NULL");
@@ -255,6 +272,10 @@
 
             if ($companyEik.val() == "" || $companyIngfoCheckbox.val() == "off") {
                 $companyEik.val("NULL");
+            }
+
+            if ($companyTax.val() == "" || $companyIngfoCheckbox.val() == "off") {
+                $companyTax.val("NULL");
             }
         });
     </script>

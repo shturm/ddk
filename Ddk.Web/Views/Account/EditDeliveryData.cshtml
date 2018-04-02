@@ -76,6 +76,15 @@
             </div>
         </div>
         <div class="form-group">
+            <label name="Tax" class="col-md-2 control-label">
+                ДДС
+            </label>
+            <div class="col-md-10">
+                <input asp-for="Tax" class="form-control" />
+                <span asp-validation-for="Tax" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <input type="submit" value="Запази" class="btn btn-default" />
             </div>

@@ -32,6 +32,8 @@ namespace Ddk.Web.Data.Entities
 
         public string CompanyEIK { get; set; }
 
+        public string Tax { get; set; }
+
         public DateTime Created { get; set; }
 
         public DateTime Updated { get; set; }

@@ -63,7 +63,8 @@ namespace Ddk.Controllers
                     Address = dbUser.Address,
                     City = dbUser.City,
                     CompanyName = dbUser.CompanyName,
-                    CompanyEIK = dbUser.CompanyEIK
+                    CompanyEIK = dbUser.CompanyEIK,
+                    Tax = dbUser.Tax
                 });
         }
 
@@ -81,6 +82,7 @@ namespace Ddk.Controllers
                 user.City = userVM.City;
                 user.CompanyName = userVM.CompanyName;
                 user.CompanyEIK = userVM.CompanyEIK;
+                user.Tax = userVM.Tax;
 
                 _context.Update(user);
                 _context.SaveChanges();

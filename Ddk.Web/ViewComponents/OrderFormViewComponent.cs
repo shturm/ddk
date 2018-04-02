@@ -36,7 +36,8 @@ namespace Ddk.Web.ViewComponents
                     Address = dbUser.Address,
                     City = dbUser.City,
                     CompanyName = dbUser.CompanyName,
-                    CompanyEIK = dbUser.CompanyEIK
+                    CompanyEIK = dbUser.CompanyEIK,
+                    Tax = dbUser.Tax
                 };
             }
 
